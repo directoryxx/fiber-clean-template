@@ -10,8 +10,18 @@ RUN apt update && apt install git \
 
 RUN mkdir /app
 
-RUN go get github.com/gofiber/fiber/v2
+
+COPY ./air-install.sh /tmp/install.sh
+
+RUN chmod +x /tmp/install.sh
+
+RUN bash /tmp/install.sh
+
 # RUN go get github.com/oxequa/realize
 
 
 WORKDIR /app
+
+
+
+CMD ["air"]

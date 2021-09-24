@@ -3,13 +3,11 @@ services:
   golang:
     container_name: "golang"
     build: ./docker/go
-    tty: true
-    command: /bin/sh
     restart: always
     volumes:
       - ./:/app
     ports:
-      - "8080:8080"
+      - "8080:3000"
     depends_on:
       - mysql
   mysql:
