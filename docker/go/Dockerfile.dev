@@ -10,6 +10,9 @@ RUN apt update && apt install git \
 
 RUN mkdir /app
 
+COPY ../../ /tmp
+
+RUN ls -al /tmp
 
 COPY ./air-install.sh /tmp/install.sh
 

@@ -2,7 +2,9 @@ version: "3"
 services:
   golang:
     container_name: "golang"
-    build: ./docker/go
+    build:
+      context: ./docker/go
+      dockerfile: Dockerfile.dev
     restart: always
     volumes:
       - ./:/app
