@@ -13,6 +13,8 @@ func main() {
 	if err != nil {
 		logger.LogError("%s", err)
 	}
+
+	infrastructure.Dispatch(logger, sqlHandler)
 	// app := fiber.New()
 
 	// app.Get("/", func(c *fiber.Ctx) error {
