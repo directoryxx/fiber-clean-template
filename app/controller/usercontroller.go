@@ -72,17 +72,17 @@ func (controller UserController) Register() fiber.Handler {
 			controller.Logger.LogError("%s", err)
 		}
 
-		return c.JSON(fiber.Map{
-			"message": "Hello World",
-			"data":    data,
+		return c.JSON(&response.SuccessResponse{
+			Success: true,
+			Data:    data,
 		})
 	}
 }
 
 func registerValidation(initval *validator.Validate, service service.UserService) {
-	// initval.RegisterValidation("username", func(fl validator.FieldLevel) bool {
-	// 	return IsValidUsername(service, fl.Field().String())
-	// })
+	initval.RegisterValidation("username", func(fl validator.FieldLevel) bool {
+		return IsValidUsername(service, fl.Field().String())
+	})
 	initval.RegisterValidation("password", func(fl validator.FieldLevel) bool {
 		return IsValidPassword(service, fl.Field().String())
 	})
@@ -92,7 +92,8 @@ func IsValidPassword(service service.UserService, input string) bool {
 	return len(input) > 6
 }
 
-// func IsValidUsername(service service.UserService, input string) bool {
-// 	// count := service.GetUsernameCount(input)
-// 	// return count == int64(0)
-// }
+func IsValidUsername(service service.UserService, input string) bool {
+	count := service.UserRepository.FindByUsername(input)
+
+	return count == int64(0)
+}
