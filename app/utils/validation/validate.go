@@ -6,10 +6,10 @@ import (
 
 // ErrorValidationResponse - Standarize the response for validation
 type ErrorValidationResponse struct {
-	FailedField string
-	Tag         string
-	Value       string
-	Message     string
+	FailedField string `json:"-"`
+	Tag         string `json:"tag"`
+	Value       string `json:"-"`
+	Message     string `json:"message"`
 }
 
 func ValidateRequest(err error, message map[string]string) []*ErrorValidationResponse {
