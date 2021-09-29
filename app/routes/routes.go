@@ -10,7 +10,7 @@ import (
 )
 
 func RegisterRoute(app *fiber.App, sqlHandler *gen.Client, ctx context.Context, log interfaces.Logger) {
-	// baseController := controller.NewController(sqlHandler, ctx, log)
 	UserController := controller.NewUserController(sqlHandler, log)
-	app.Post("/", UserController.IndexUser())
+	
+	app.Post("/register", UserController.Register())
 }

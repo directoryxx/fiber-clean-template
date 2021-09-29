@@ -2,7 +2,6 @@ package controller
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/directoryxx/fiber-clean-template/app/interfaces"
 	"github.com/directoryxx/fiber-clean-template/app/repository"
@@ -29,20 +28,22 @@ func NewUserController(sqlHandler *gen.Client, logger interfaces.Logger) *UserCo
 	}
 }
 
-func (controller UserController) IndexUser() fiber.Handler {
+func (controller UserController) Register() fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		controller.Logger.LogAccess("%s %s %s\n", c.IP(), c.Method(), c.OriginalURL())
 		var m map[string]string
 
 		c.BodyParser(&m)
 
-		controller.Userservice.CreateUser(m)
+		data, err := controller.Userservice.CreateUser(m)
 
-		fmt.Println(m)
+		if err != nil {
+			controller.Logger.LogError("%s", err)
+		}
 
 		return c.JSON(fiber.Map{
 			"message": "Hello World",
-			// "data":    data,
+			"data":    data,
 		})
 	}
 }
