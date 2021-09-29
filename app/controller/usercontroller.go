@@ -86,6 +86,19 @@ func (controller UserController) Register() fiber.Handler {
 	}
 }
 
+func (controller UserController) Login() fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		return c.JSON(&response.SuccessResponse{
+			Success: true,
+			Message: "Berhasil mendaftar",
+			// Data: &response.RegisterResponse{
+			// 	Name:     data.Name,
+			// 	Username: data.Username,
+			// },
+		})
+	}
+}
+
 func registerValidation(initval *validator.Validate, service service.UserService) {
 	initval.RegisterValidation("username", func(fl validator.FieldLevel) bool {
 		return IsValidUsername(service, fl.Field().String())
@@ -100,7 +113,7 @@ func IsValidPassword(service service.UserService, input string) bool {
 }
 
 func IsValidUsername(service service.UserService, input string) bool {
-	count := service.UserRepository.FindByUsername(input)
+	count := service.CheckUsername(input)
 
 	return count == int64(0)
 }

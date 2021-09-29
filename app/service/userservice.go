@@ -17,7 +17,7 @@ func (us UserService) CreateUser(User *rules.RegisterValidation) (user *gen.User
 }
 
 func (us UserService) CheckUsername(username string) (count int64) {
-	data := us.UserRepository.FindByUsername(username)
+	data := us.UserRepository.CountByUsername(username)
 
 	return data
 }

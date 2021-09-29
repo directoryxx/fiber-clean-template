@@ -19,7 +19,7 @@ func (ur *UserRepository) Insert(User *rules.RegisterValidation) (user *gen.User
 	return create, err
 }
 
-func (ur *UserRepository) FindByUsername(input string) (res int64) {
+func (ur *UserRepository) CountByUsername(input string) (res int64) {
 	check, _ := ur.SQLHandler.User.Query().Where(user.Username(input)).Count(ur.Ctx)
 
 	return int64(check)
