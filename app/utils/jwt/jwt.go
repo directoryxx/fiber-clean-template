@@ -10,7 +10,6 @@ import (
 	"github.com/directoryxx/fiber-clean-template/app/service"
 	"github.com/google/uuid"
 
-	// "github.com/go-delve/delve/service"
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt"
 )
@@ -69,10 +68,10 @@ func CreateAuth(service service.UserService, userid uint, td *TokenDetails) erro
 	rt := time.Unix(td.RtExpires, 0)
 	now := time.Now()
 
-	service.InsertToken(td.AccessUuid, strconv.Itoa(int(userid)), at.Sub(now))
+	errAccess := service.InsertToken(td.AccessUuid, strconv.Itoa(int(userid)), at.Sub(now))
 	service.InsertToken(td.RefreshUuid, strconv.Itoa(int(userid)), rt.Sub(now))
 
-	return nil
+	return errAccess
 }
 
 // dibawah ini adalah untuk mengakses token

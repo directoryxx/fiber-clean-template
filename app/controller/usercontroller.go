@@ -84,7 +84,12 @@ func (controller UserController) Register() fiber.Handler {
 			controller.Logger.LogError("%s", errToken)
 		}
 
-		jwt.CreateAuth(controller.Userservice, uint(data.ID), token)
+		persistToken := jwt.CreateAuth(controller.Userservice, uint(data.ID), token)
+
+		// TODO: Fixing Redis Service
+		if persistToken != nil {
+			controller.Logger.LogError("%s", errToken)
+		}
 
 		return c.JSON(&response.SuccessResponse{
 			Success: true,
