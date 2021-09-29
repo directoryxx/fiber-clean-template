@@ -14,4 +14,5 @@ func RegisterRoute(app *fiber.App, sqlHandler *gen.Client, ctx context.Context, 
 	UserController := controller.NewUserController(sqlHandler, log, redisHandler)
 
 	app.Post("/register", UserController.Register())
+	app.Post("/login", UserController.Login())
 }

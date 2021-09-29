@@ -14,4 +14,5 @@ type ErrorResponse struct {
 type RegisterResponse struct {
 	Name     string `json:"name"`
 	Username string `json:"username"`
+	Token    string `json:"token"`
 }

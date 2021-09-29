@@ -10,6 +10,7 @@ import (
 
 	"github.com/directoryxx/fiber-clean-template/app/service"
 	"github.com/directoryxx/fiber-clean-template/app/utils/encrypt"
+	"github.com/directoryxx/fiber-clean-template/app/utils/jwt"
 	"github.com/directoryxx/fiber-clean-template/app/utils/response"
 	"github.com/directoryxx/fiber-clean-template/app/utils/validation"
 	"github.com/directoryxx/fiber-clean-template/database/gen"
@@ -77,12 +78,21 @@ func (controller UserController) Register() fiber.Handler {
 			controller.Logger.LogError("%s", err)
 		}
 
+		token, errToken := jwt.CreateToken(uint(data.ID))
+
+		if errToken != nil {
+			controller.Logger.LogError("%s", errToken)
+		}
+
+		jwt.CreateAuth(controller.Userservice, uint(data.ID), token)
+
 		return c.JSON(&response.SuccessResponse{
 			Success: true,
 			Message: "Berhasil mendaftar",
 			Data: &response.RegisterResponse{
 				Name:     data.Name,
 				Username: data.Username,
+				Token:    token.AccessToken,
 			},
 		})
 	}

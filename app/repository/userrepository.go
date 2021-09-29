@@ -3,6 +3,8 @@ package repository
 import (
 	"context"
 
+	"time"
+
 	"github.com/directoryxx/fiber-clean-template/app/rules"
 	"github.com/directoryxx/fiber-clean-template/database/gen"
 	"github.com/directoryxx/fiber-clean-template/database/gen/user"
@@ -25,4 +27,12 @@ func (ur *UserRepository) CountByUsername(input string) (res int64) {
 	check, _ := ur.SQLHandler.User.Query().Where(user.Username(input)).Count(ur.Ctx)
 
 	return int64(check)
+}
+
+func (ur *UserRepository) InsertRedis(key string, value interface{}, expires time.Duration) error {
+	return ur.RedisHandler.Set(ur.Ctx, key, value, expires).Err()
+}
+
+func (ur *UserRepository) GettRedis(key string) (res string, err error) {
+	return ur.RedisHandler.Get(ur.Ctx, key).Result()
 }
