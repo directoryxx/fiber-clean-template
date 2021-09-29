@@ -8,6 +8,7 @@ import (
 	"github.com/directoryxx/fiber-clean-template/app/rules"
 
 	"github.com/directoryxx/fiber-clean-template/app/service"
+	"github.com/directoryxx/fiber-clean-template/app/utils/encrypt"
 	"github.com/directoryxx/fiber-clean-template/app/utils/response"
 	"github.com/directoryxx/fiber-clean-template/app/utils/validation"
 	"github.com/directoryxx/fiber-clean-template/database/gen"
@@ -66,6 +67,8 @@ func (controller UserController) Register() fiber.Handler {
 			})
 		}
 
+		register.Password, _ = encrypt.CreateHash(register.Password, encrypt.DefaultParams)
+
 		data, err := controller.Userservice.CreateUser(register)
 
 		if err != nil {
@@ -74,7 +77,11 @@ func (controller UserController) Register() fiber.Handler {
 
 		return c.JSON(&response.SuccessResponse{
 			Success: true,
-			Data:    data,
+			Message: "Berhasil mendaftar",
+			Data: &response.RegisterResponse{
+				Name:     data.Name,
+				Username: data.Username,
+			},
 		})
 	}
 }
