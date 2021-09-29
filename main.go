@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"log"
 
 	"github.com/directoryxx/fiber-clean-template/app/bootstrap"
 	"github.com/directoryxx/fiber-clean-template/app/infrastructure"
@@ -16,15 +15,10 @@ func main() {
 
 	sqlHandler, err := infrastructure.NewSQLHandler(ctx)
 	if err != nil {
-		log.Fatal(err)
+		logger.LogError("%s", err)
 	}
 
-	bootstrap.Dispatch(sqlHandler, ctx, logger)
-	// app := fiber.New()
+	redisHandler := infrastructure.RedisInit()
 
-	// app.Get("/", func(c *fiber.Ctx) error {
-	// 	return c.SendString("Hello, World!")
-	// })
-
-	// log.Fatal(app.Listen(":"+os.Getenv("APP_PORT")))
+	bootstrap.Dispatch(sqlHandler, ctx, logger, redisHandler)
 }

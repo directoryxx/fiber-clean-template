@@ -7,14 +7,15 @@ import (
 	"github.com/directoryxx/fiber-clean-template/app/interfaces"
 	"github.com/directoryxx/fiber-clean-template/app/routes"
 	"github.com/directoryxx/fiber-clean-template/database/gen"
+	"github.com/go-redis/redis/v8"
 	"github.com/gofiber/fiber/v2"
 )
 
 // Dispatch is handle routing
-func Dispatch(sqlHandler *gen.Client, ctx context.Context, log interfaces.Logger) {
+func Dispatch(sqlHandler *gen.Client, ctx context.Context, log interfaces.Logger, redisHandler *redis.Client) {
 	app := fiber.New()
 
-	routes.RegisterRoute(app, sqlHandler, ctx, log)
+	routes.RegisterRoute(app, sqlHandler, ctx, log, redisHandler)
 
 	errApp := app.Listen("0.0.0.0:" + os.Getenv("APP_PORT"))
 
