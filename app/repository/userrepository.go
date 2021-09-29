@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 
+	"github.com/directoryxx/fiber-clean-template/app/rules"
 	"github.com/directoryxx/fiber-clean-template/database/gen"
 )
 
@@ -11,8 +12,8 @@ type UserRepository struct {
 	Ctx        context.Context
 }
 
-func (ur *UserRepository) Insert(User map[string]string) (user *gen.User, err error) {
-	create, err := ur.SQLHandler.User.Create().SetName(User["name"]).SetUsername(User["username"]).SetPassword(User["password"]).Save(ur.Ctx)
+func (ur *UserRepository) Insert(User *rules.RegisterValidation) (user *gen.User, err error) {
+	create, err := ur.SQLHandler.User.Create().SetName(User.Name).SetUsername(User.Username).SetPassword(User.Password).Save(ur.Ctx)
 
 	return create, err
 }
