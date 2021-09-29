@@ -1,20 +1,25 @@
 package main
 
 import (
+	"context"
+	"log"
+
+	"github.com/directoryxx/fiber-clean-template/app/bootstrap"
 	"github.com/directoryxx/fiber-clean-template/app/infrastructure"
 )
 
 func main() {
+	ctx := context.Background()
 	logger := infrastructure.NewLogger()
 
 	infrastructure.Load(logger)
 
-	sqlHandler, err := infrastructure.NewSQLHandler()
+	sqlHandler, err := infrastructure.NewSQLHandler(ctx)
 	if err != nil {
-		logger.LogError("%s", err)
+		log.Fatal(err)
 	}
 
-	infrastructure.Dispatch(logger, sqlHandler)
+	bootstrap.Dispatch(sqlHandler, ctx, logger)
 	// app := fiber.New()
 
 	// app.Get("/", func(c *fiber.Ctx) error {

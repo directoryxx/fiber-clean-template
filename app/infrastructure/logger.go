@@ -5,14 +5,14 @@ import (
 	"log"
 	"os"
 
-	"github.com/directoryxx/fiber-clean-template/app/usecases"
+	"github.com/directoryxx/fiber-clean-template/app/interfaces"
 )
 
 // A Logger belong to the infrastructure layer.
 type Logger struct{}
 
 // NewLogger return a Logger.
-func NewLogger() usecases.Logger {
+func NewLogger() interfaces.Logger {
 	return &Logger{}
 }
 
