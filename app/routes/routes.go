@@ -17,6 +17,7 @@ func RegisterRoute(app *fiber.App, sqlHandler *gen.Client, ctx context.Context, 
 	UserController := controller.NewUserController(sqlHandler, log, redisHandler)
 	HomeController := controller.NewHomeController(sqlHandler, log, redisHandler)
 
+	app.Group("auth")
 	app.Post("/register", UserController.Register())
 	app.Post("/login", UserController.Login())
 
@@ -29,5 +30,6 @@ func RegisterRoute(app *fiber.App, sqlHandler *gen.Client, ctx context.Context, 
 	}))
 
 	app.Get("/current", HomeController.Current())
-
+	// app.Group("test")
+	// app.Get("/halo", HomeController.Current())
 }
