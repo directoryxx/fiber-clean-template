@@ -11,11 +11,14 @@ import (
 	"github.com/directoryxx/fiber-clean-template/database/gen"
 	"github.com/go-redis/redis/v8"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/monitor"
 )
 
 func RegisterRoute(app *fiber.App, sqlHandler *gen.Client, ctx context.Context, log interfaces.Logger, redisHandler *redis.Client) {
 	UserController := controller.NewUserController(sqlHandler, log, redisHandler)
 	HomeController := controller.NewHomeController(sqlHandler, log, redisHandler)
+
+	app.Get("/dashboard", monitor.New())
 
 	app.Group("auth")
 	app.Post("/register", UserController.Register())
