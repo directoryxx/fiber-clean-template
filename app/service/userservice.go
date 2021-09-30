@@ -41,3 +41,7 @@ func (us *UserService) InsertToken(key string, value interface{}, expires time.D
 func (us *UserService) FetchToken(key string) (res string, err error) {
 	return us.UserRepository.GettRedis(key)
 }
+
+func (us *UserService) CurrentUser(input uint64) (res *gen.User, err error) {
+	return us.UserRepository.FindById(input)
+}

@@ -36,6 +36,11 @@ func (ur *UserRepository) FindByUsername(input string) (res *gen.User, err error
 	return username, err
 }
 
+func (ur *UserRepository) FindById(input uint64) (res *gen.User, err error) {
+	user, err := ur.SQLHandler.User.Query().Where(user.ID(int(input))).Only(ur.Ctx)
+	return user, err
+}
+
 func (ur *UserRepository) InsertRedis(key string, value interface{}, expires time.Duration) error {
 	return ur.RedisHandler.Set(ur.Ctx, key, value, expires).Err()
 }
