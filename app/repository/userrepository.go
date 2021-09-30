@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"fmt"
 
 	"time"
 
@@ -27,6 +28,12 @@ func (ur *UserRepository) CountByUsername(input string) (res int64) {
 	check, _ := ur.SQLHandler.User.Query().Where(user.Username(input)).Count(ur.Ctx)
 
 	return int64(check)
+}
+
+func (ur *UserRepository) FindByUsername(input string) (res *gen.User, err error) {
+	username, err := ur.SQLHandler.User.Query().Where(user.Username(input)).Only(ur.Ctx)
+	fmt.Println(username)
+	return username, err
 }
 
 func (ur *UserRepository) InsertRedis(key string, value interface{}, expires time.Duration) error {

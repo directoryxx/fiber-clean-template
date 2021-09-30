@@ -104,14 +104,63 @@ func (controller UserController) Register() fiber.Handler {
 
 func (controller UserController) Login() fiber.Handler {
 	return func(c *fiber.Ctx) error {
-		return c.JSON(&response.SuccessResponse{
-			Success: true,
-			Message: "Berhasil mendaftar",
-			// Data: &response.RegisterResponse{
-			// 	Name:     data.Name,
-			// 	Username: data.Username,
-			// },
-		})
+		var login *rules.LoginValidation
+		err := c.BodyParser(&login)
+		if err != nil {
+			_ = c.JSON(&fiber.Map{
+				"success": false,
+				"error":   err,
+			})
+		}
+
+		initval = validator.New()
+		loginValidation(initval, controller.Userservice)
+		errVal := initval.Struct(login)
+
+		if errVal != nil {
+			message := make(map[string]string)
+			message["password"] = "Password harus lebih dari 6 karakter"
+			errorResponse := validation.ValidateRequest(errVal, message)
+			return c.JSON(errorResponse)
+		}
+
+		res, _ := controller.Userservice.CheckUsername(login.Username)
+
+		if res.ID == 0 {
+			c.Status(422)
+			err = c.JSON(&fiber.Map{
+				"success": false,
+				"error":   "Data tidak ditemukan",
+			})
+			return err
+		}
+
+		check, _ := encrypt.ComparePasswordAndHash(login.Password, string(res.Password))
+
+		if check {
+			td, errToken := jwt.CreateToken(uint(res.ID))
+			if errToken != nil {
+				controller.Logger.LogError("%s", errToken)
+			}
+
+			jwt.CreateAuth(controller.Userservice, uint(res.ID), td)
+
+			return c.JSON(&response.SuccessResponse{
+				Message: "Berhasil login",
+				Success: true,
+				Data: &response.LoginResponse{
+					Name:     res.Name,
+					Username: res.Username,
+					Token:    td.AccessToken,
+				},
+			})
+		} else {
+			c.Status(401)
+			return c.JSON(&response.ErrorResponse{
+				Success: false,
+				Message: "Username/Password salah",
+			})
+		}
 	}
 }
 
@@ -129,7 +178,13 @@ func IsValidPassword(service service.UserService, input string) bool {
 }
 
 func IsValidUsername(service service.UserService, input string) bool {
-	count := service.CheckUsername(input)
+	count := service.CheckUsernameCount(input)
 
 	return count == int64(0)
+}
+
+func loginValidation(initval *validator.Validate, service service.UserService) {
+	initval.RegisterValidation("password", func(fl validator.FieldLevel) bool {
+		return IsValidPassword(service, fl.Field().String())
+	})
 }

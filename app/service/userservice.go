@@ -18,10 +18,20 @@ func (us UserService) CreateUser(User *rules.RegisterValidation) (user *gen.User
 	return data, err
 }
 
-func (us UserService) CheckUsername(username string) (count int64) {
+func (us UserService) CheckUsernameCount(username string) (count int64) {
 	data := us.UserRepository.CountByUsername(username)
 
 	return data
+}
+
+func (us UserService) CheckUsername(username string) (res *gen.User, err error) {
+	data, err := us.UserRepository.FindByUsername(username)
+
+	if err != nil {
+		panic(err)
+	}
+
+	return data, err
 }
 
 func (us *UserService) InsertToken(key string, value interface{}, expires time.Duration) error {
