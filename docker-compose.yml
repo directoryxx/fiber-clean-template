@@ -10,8 +10,9 @@ services:
       - ./:/app
     ports:
       - "8080:3000"
-    depends_on:
-      - mysql
+    networks:
+      - dev
+      
   mysql:
     container_name: "mysql"
     build: ./docker/mysql
@@ -23,6 +24,30 @@ services:
     environment:
       - MYSQL_DATABASE=go_clean_architecture_web_application_boilerplate
       - MYSQL_ROOT_PASSWORD=password
+    networks:
+      - dev
+
+  redis-server:
+    image: redis:6.2.5-alpine
+    container_name: redis-server
+    restart: unless-stopped
+    environment:
+      REDIS_PASSWORD: p4ssw0rd
+    command: redis-server --requirepass p4ssw0rd
+    volumes:
+      - redisserverdata:/data
+    tty: true
+    ports:
+      - 6380:6379
+    networks:
+      - dev
+
 volumes:
   mysql_db:
     driver: local
+  redisserverdata:
+    driver: local
+
+
+networks:
+  dev:

@@ -74,7 +74,6 @@ func CreateAuth(service service.UserService, userid uint, td *TokenDetails) erro
 	return errAccess
 }
 
-// dibawah ini adalah untuk mengakses token
 func ExtractTokenMetadata(r *fiber.Ctx) (*AccessDetails, error) {
 	token, err := VerifyToken(r)
 	if err != nil {
