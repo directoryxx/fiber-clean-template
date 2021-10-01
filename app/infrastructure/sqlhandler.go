@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/casbin/casbin/v2"
 	"github.com/directoryxx/fiber-clean-template/database/gen"
 	"github.com/directoryxx/fiber-clean-template/database/gen/migrate"
 	_ "github.com/go-sql-driver/mysql"
@@ -13,7 +14,7 @@ import (
 var client *gen.Client
 
 // NewSQLHandler returns connection and methos which is related to database handling.
-func NewSQLHandler(ctx context.Context) (*gen.Client, error) {
+func NewSQLHandler(ctx context.Context) (*gen.Client, *casbin.Enforcer, error) {
 	driver := os.Getenv("DB_TYPE")
 	connDSN := os.Getenv("DB_USERNAME") + ":" + os.Getenv("DB_PASSWORD") + "@tcp(" + os.Getenv("DB_HOST") + ":" + os.Getenv("DB_PORT") + ")/" + os.Getenv("DB_NAME") + "?parseTime=true"
 	client, err := gen.Open(driver, connDSN)
@@ -31,9 +32,9 @@ func NewSQLHandler(ctx context.Context) (*gen.Client, error) {
 		log.Fatalf("failed creating schema resources: %v", err)
 	}
 
-	CasbinLoad(driver, connDSN)
+	enforcer := CasbinLoad(driver, connDSN)
 
-	return client, nil
+	return client, enforcer, nil
 }
 
 func CloseSQLHandler() {
