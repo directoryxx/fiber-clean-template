@@ -14,7 +14,9 @@ var client *gen.Client
 
 // NewSQLHandler returns connection and methos which is related to database handling.
 func NewSQLHandler(ctx context.Context) (*gen.Client, error) {
-	client, err := gen.Open(os.Getenv("DB_TYPE"), os.Getenv("DB_USERNAME")+":"+os.Getenv("DB_PASSWORD")+"@tcp("+os.Getenv("DB_HOST")+":"+os.Getenv("DB_PORT")+")/"+os.Getenv("DB_NAME")+"?parseTime=true")
+	driver := os.Getenv("DB_TYPE")
+	connDSN := os.Getenv("DB_USERNAME") + ":" + os.Getenv("DB_PASSWORD") + "@tcp(" + os.Getenv("DB_HOST") + ":" + os.Getenv("DB_PORT") + ")/" + os.Getenv("DB_NAME") + "?parseTime=true"
+	client, err := gen.Open(driver, connDSN)
 	if err != nil {
 		log.Fatalf("failed connecting to mysql: %v", err)
 	}
@@ -28,6 +30,8 @@ func NewSQLHandler(ctx context.Context) (*gen.Client, error) {
 	if err != nil {
 		log.Fatalf("failed creating schema resources: %v", err)
 	}
+
+	CasbinLoad(driver, connDSN)
 
 	return client, nil
 }
