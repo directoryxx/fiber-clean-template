@@ -2,7 +2,6 @@ package controller
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/directoryxx/fiber-clean-template/app/interfaces"
 	"github.com/directoryxx/fiber-clean-template/app/repository"
@@ -12,7 +11,6 @@ import (
 	"github.com/directoryxx/fiber-clean-template/database/gen"
 	"github.com/go-redis/redis/v8"
 	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/session"
 )
 
 // A UserController belong to the interface layer.
@@ -36,10 +34,10 @@ func NewHomeController(sqlHandler *gen.Client, logger interfaces.Logger, redisHa
 
 func (controller HomeController) Current() fiber.Handler {
 	return func(c *fiber.Ctx) error {
-		store := session.New()
-		sess, _ := store.Get(c)
+		// store := session.New()
+		// sess, _ := store.Get(c)
 
-		fmt.Println("id : " + sess.ID())
+		// fmt.Println("id : " + sess.ID())
 
 		controller.Logger.LogAccess("%s %s %s\n", c.IP(), c.Method(), c.OriginalURL())
 
