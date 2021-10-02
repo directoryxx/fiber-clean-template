@@ -7,7 +7,7 @@ import (
 // ErrorValidationResponse - Standarize the response for validation
 type ErrorValidationResponse struct {
 	FailedField string `json:"-"`
-	Tag         string `json:"tag"`
+	Input       string `json:"input"`
 	Value       string `json:"-"`
 	Message     string `json:"message"`
 }
@@ -18,7 +18,7 @@ func ValidateRequest(err error, message map[string]string) []*ErrorValidationRes
 		for _, err := range err.(validator.ValidationErrors) {
 			var element ErrorValidationResponse
 			element.FailedField = err.StructNamespace()
-			element.Tag = err.Tag()
+			element.Input = err.Tag()
 			element.Value = err.Param()
 			element.Message = message[err.Tag()]
 			errors = append(errors, &element)
@@ -37,7 +37,7 @@ func ValidateStruct(class interface{}) []*ErrorValidationResponse {
 		for _, err := range err.(validator.ValidationErrors) {
 			var element ErrorValidationResponse
 			element.FailedField = err.StructNamespace()
-			element.Tag = err.Tag()
+			element.Input = err.Tag()
 			element.Value = err.Param()
 			errors = append(errors, &element)
 		}

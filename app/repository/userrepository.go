@@ -2,7 +2,6 @@ package repository
 
 import (
 	"context"
-	"fmt"
 
 	"time"
 
@@ -32,7 +31,6 @@ func (ur *UserRepository) CountByUsername(input string) (res int64) {
 
 func (ur *UserRepository) FindByUsername(input string) (res *gen.User, err error) {
 	username, err := ur.SQLHandler.User.Query().Where(user.Username(input)).Only(ur.Ctx)
-	fmt.Println(username)
 	return username, err
 }
 

@@ -18,10 +18,10 @@ import (
 func RegisterRoute(app *fiber.App, sqlHandler *gen.Client, ctx context.Context, log interfaces.Logger, redisHandler *redis.Client, enforcer *casbin.Enforcer) {
 	UserController := controller.NewUserController(sqlHandler, log, redisHandler)
 	HomeController := controller.NewHomeController(sqlHandler, log, redisHandler)
+	RoleController := controller.NewRoleController(sqlHandler, log)
 
 	app.Get("/dashboard", monitor.New())
 
-	app.Group("auth")
 	app.Post("/register", UserController.Register())
 	app.Post("/login", UserController.Login())
 
@@ -34,6 +34,7 @@ func RegisterRoute(app *fiber.App, sqlHandler *gen.Client, ctx context.Context, 
 	}))
 
 	app.Get("/current", HomeController.Current())
-	// app.Group("test")
-	// app.Get("/halo", HomeController.Current())
+
+	app.Post("/role", RoleController.CreateRole())
+	app.Get("/role/:id", RoleController.GetRole())
 }
