@@ -104,6 +104,7 @@ func (controller UserController) Register() fiber.Handler {
 
 func (controller UserController) Login() fiber.Handler {
 	return func(c *fiber.Ctx) error {
+		controller.Logger.LogAccess("%s %s %s\n", c.IP(), c.Method(), c.OriginalURL())
 		var login *rules.LoginValidation
 		err := c.BodyParser(&login)
 		if err != nil {
