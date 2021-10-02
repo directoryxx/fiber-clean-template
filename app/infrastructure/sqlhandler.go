@@ -34,6 +34,8 @@ func NewSQLHandler(ctx context.Context) (*gen.Client, *casbin.Enforcer, error) {
 
 	enforcer := CasbinLoad(driver, connDSN)
 
+	// fmt.Println(enforcer)
+
 	return client, enforcer, nil
 }
 

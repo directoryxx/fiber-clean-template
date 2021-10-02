@@ -7,6 +7,7 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/session"
 )
 
+// TODO : Refactor This
 func JWTProtected(svc service.UserService) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		store := session.New()
