@@ -22,7 +22,7 @@ func JWTProtected(svc service.UserService) fiber.Handler {
 
 		if userId == 0 {
 			c.Status(401)
-			return c.JSON(fiber.Map{"error": "Unauthorized access"})
+			return c.JSON(fiber.Map{"error": "Unauthorized accesst"})
 		}
 
 		// sess.Set("id", userId)

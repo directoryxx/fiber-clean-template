@@ -101,6 +101,76 @@ func (controller RoleController) CreateRole() fiber.Handler {
 	}
 }
 
+func (controller RoleController) UpdateRole() fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		controller.Logger.LogAccess("%s %s %s\n", c.IP(), c.Method(), c.OriginalURL())
+
+		var role *rules.RoleValidation
+		errRequest := c.BodyParser(&role)
+
+		id, err := c.ParamsInt("id")
+
+		data := controller.Roleservice.GetById(id)
+
+		if data == nil {
+			c.Status(404)
+			return c.JSON(&response.ErrorResponse{
+				Success: false,
+				Message: "Data tidak ditemukan",
+			})
+		}
+
+		if err != nil {
+			c.Status(422)
+			return c.JSON(&response.ErrorResponse{
+				Success: false,
+				Message: "Silahkan periksa kembali",
+			})
+		}
+
+		if errRequest != nil {
+			controller.Logger.LogError("%s", errRequest)
+			c.Status(422)
+			return c.JSON(&response.ErrorResponse{
+				Success: false,
+				Message: errRequest,
+			})
+		}
+
+		initval = validator.New()
+		roleValidation(initval, controller.Roleservice)
+		errVal := initval.Struct(role)
+
+		if errVal != nil {
+			message := make(map[string]string)
+			message["name"] = "Role telah terdaftar"
+			errorResponse := validation.ValidateRequest(errVal, message)
+			return c.JSON(&response.ErrorResponse{
+				Success: false,
+				Message: errorResponse,
+			})
+		}
+
+		dataRole, errCreate := controller.Roleservice.UpdateRole(id, role)
+
+		if errCreate != nil {
+			controller.Logger.LogError("%s", errCreate)
+			c.Status(422)
+			return c.JSON(&response.ErrorResponse{
+				Success: false,
+				Message: errCreate,
+			})
+		}
+
+		return c.JSON(response.SuccessResponse{
+			Success: true,
+			Data:    dataRole,
+			Message: "Role berhasil dibuat",
+		})
+
+	}
+}
+
 func (controller RoleController) GetRole() fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		controller.Logger.LogAccess("%s %s %s\n", c.IP(), c.Method(), c.OriginalURL())

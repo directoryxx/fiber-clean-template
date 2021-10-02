@@ -26,8 +26,8 @@ func (rr *RoleRepository) GetAll() (role []*gen.Role, err error) {
 }
 
 func (rr *RoleRepository) Update(role_id int, Role *rules.RoleValidation) (role *gen.Role, err error) {
-	role, err = rr.SQLHandler.Role.UpdateOneID(role_id).SetName(role.Name).Save(rr.Ctx)
-	return role, err
+	roleUpdate, errUpdate := rr.SQLHandler.Role.UpdateOneID(role_id).SetName(Role.Name).Save(rr.Ctx)
+	return roleUpdate, errUpdate
 }
 
 func (rr *RoleRepository) Delete(role_id int) (err error) {

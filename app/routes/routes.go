@@ -37,4 +37,6 @@ func RegisterRoute(app *fiber.App, sqlHandler *gen.Client, ctx context.Context, 
 
 	app.Post("/role", RoleController.CreateRole())
 	app.Get("/role/:id", RoleController.GetRole())
+	app.Put("/role/:id", RoleController.UpdateRole())
+	app.Delete("/role/:id", RoleController.DeleteRole())
 }
