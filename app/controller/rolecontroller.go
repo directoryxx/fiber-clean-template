@@ -165,7 +165,7 @@ func (controller RoleController) UpdateRole() fiber.Handler {
 		return c.JSON(response.SuccessResponse{
 			Success: true,
 			Data:    dataRole,
-			Message: "Role berhasil dibuat",
+			Message: "Role berhasil diubah",
 		})
 
 	}
