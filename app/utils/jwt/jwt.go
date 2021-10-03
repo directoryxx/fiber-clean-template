@@ -120,11 +120,12 @@ func ExtractToken(r *fiber.Ctx) string {
 	return ""
 }
 
-func FetchAuth(service service.UserService, authD *AccessDetails) (uint64, error) {
+func FetchAuth(service service.UserService, authD *AccessDetails) (uint64, uint64, error) {
 	userid, _ := service.FetchToken(authD.AccessUuid)
 	userID, _ := strconv.ParseUint(userid, 10, 64)
 	if authD.UserId != userID {
-		return 0, fmt.Errorf("userid mismatch")
+		return 0, 0, fmt.Errorf("userid mismatch")
 	}
-	return userID, nil
+	fmt.Println(authD)
+	return userID, authD.UserId, nil
 }

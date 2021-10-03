@@ -2,12 +2,14 @@ package controller
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/directoryxx/fiber-clean-template/app/interfaces"
 	"github.com/directoryxx/fiber-clean-template/app/repository"
 	"github.com/directoryxx/fiber-clean-template/app/service"
 	"github.com/directoryxx/fiber-clean-template/app/utils/jwt"
 	"github.com/directoryxx/fiber-clean-template/app/utils/response"
+	"github.com/directoryxx/fiber-clean-template/app/utils/session"
 	"github.com/directoryxx/fiber-clean-template/database/gen"
 	"github.com/go-redis/redis/v8"
 	"github.com/gofiber/fiber/v2"
@@ -34,10 +36,8 @@ func NewHomeController(sqlHandler *gen.Client, logger interfaces.Logger, redisHa
 
 func (controller HomeController) Current() fiber.Handler {
 	return func(c *fiber.Ctx) error {
-		// store := session.New()
-		// sess, _ := store.Get(c)
-
-		// fmt.Println("id : " + sess.ID())
+		auth := session.GetAuth()
+		fmt.Println(auth)
 
 		controller.Logger.LogAccess("%s %s %s\n", c.IP(), c.Method(), c.OriginalURL())
 

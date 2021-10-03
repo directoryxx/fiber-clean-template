@@ -18,7 +18,7 @@ type UserRepository struct {
 }
 
 func (ur *UserRepository) Insert(User *rules.RegisterValidation) (user *gen.User, err error) {
-	create, err := ur.SQLHandler.User.Create().SetName(User.Name).SetUsername(User.Username).SetPassword(User.Password).Save(ur.Ctx)
+	create, err := ur.SQLHandler.User.Create().SetName(User.Name).SetUsername(User.Username).SetPassword(User.Password).SetRoleID(4).Save(ur.Ctx)
 
 	return create, err
 }
