@@ -20,7 +20,9 @@ const idleTimeout = 5 * time.Second
 
 // Dispatch is handle routing
 func Dispatch(sqlHandler *gen.Client, ctx context.Context, log interfaces.Logger, redisHandler *redis.Client, enforcer *casbin.Enforcer) {
-	app := fiber.New()
+	app := fiber.New(fiber.Config{
+		IdleTimeout: idleTimeout,
+	})
 
 	// app.Use(pprof.New())
 
