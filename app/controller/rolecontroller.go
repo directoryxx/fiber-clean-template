@@ -13,13 +13,16 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+var pageRole string = "role"
+
 // A UserController belong to the interface layer.
 type RoleController struct {
 	Roleservice service.RoleService
 	Logger      interfaces.Logger
+	Fiber       *fiber.App
 }
 
-func NewRoleController(logger interfaces.Logger) *RoleController {
+func NewRoleController(logger interfaces.Logger, fiber *fiber.App) *RoleController {
 	return &RoleController{
 		Roleservice: service.RoleService{
 			RoleRepository: repository.RoleRepository{
@@ -28,7 +31,15 @@ func NewRoleController(logger interfaces.Logger) *RoleController {
 			},
 		},
 		Logger: logger,
+		Fiber:  fiber,
 	}
+}
+
+func (controller RoleController) RoleRouter() {
+	controller.Fiber.Post("/role", controller.createRole())
+	controller.Fiber.Get("/role/:id", controller.getRole())
+	controller.Fiber.Put("/role/:id", controller.updateRole())
+	controller.Fiber.Delete("/role/:id", controller.deleteRole())
 }
 
 func (controller RoleController) GetAll() fiber.Handler {
@@ -53,7 +64,7 @@ func (controller RoleController) GetAll() fiber.Handler {
 	}
 }
 
-func (controller RoleController) CreateRole() fiber.Handler {
+func (controller RoleController) createRole() fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		controller.Logger.LogAccess("%s %s %s\n", c.IP(), c.Method(), c.OriginalURL())
 
@@ -100,7 +111,7 @@ func (controller RoleController) CreateRole() fiber.Handler {
 	}
 }
 
-func (controller RoleController) UpdateRole() fiber.Handler {
+func (controller RoleController) updateRole() fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		controller.Logger.LogAccess("%s %s %s\n", c.IP(), c.Method(), c.OriginalURL())
 
@@ -170,7 +181,7 @@ func (controller RoleController) UpdateRole() fiber.Handler {
 	}
 }
 
-func (controller RoleController) GetRole() fiber.Handler {
+func (controller RoleController) getRole() fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		controller.Logger.LogAccess("%s %s %s\n", c.IP(), c.Method(), c.OriginalURL())
 
@@ -203,7 +214,7 @@ func (controller RoleController) GetRole() fiber.Handler {
 	}
 }
 
-func (controller RoleController) DeleteRole() fiber.Handler {
+func (controller RoleController) deleteRole() fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		controller.Logger.LogAccess("%s %s %s\n", c.IP(), c.Method(), c.OriginalURL())
 
