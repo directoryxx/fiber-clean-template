@@ -9,16 +9,15 @@ import (
 	"github.com/directoryxx/fiber-clean-template/app/middleware"
 	"github.com/directoryxx/fiber-clean-template/app/repository"
 	"github.com/directoryxx/fiber-clean-template/app/service"
-	"github.com/directoryxx/fiber-clean-template/database/gen"
 	"github.com/go-redis/redis/v8"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/monitor"
 )
 
-func RegisterRoute(app *fiber.App, sqlHandler *gen.Client, ctx context.Context, log interfaces.Logger, redisHandler *redis.Client, enforcer *casbin.Enforcer) {
-	UserController := controller.NewUserController(sqlHandler, log, redisHandler)
-	HomeController := controller.NewHomeController(sqlHandler, log, redisHandler)
-	RoleController := controller.NewRoleController(sqlHandler, log)
+func RegisterRoute(app *fiber.App, ctx context.Context, log interfaces.Logger, redisHandler *redis.Client, enforcer *casbin.Enforcer) {
+	UserController := controller.NewUserController(log, redisHandler)
+	HomeController := controller.NewHomeController(log, redisHandler)
+	RoleController := controller.NewRoleController(log)
 
 	app.Get("/dashboard", monitor.New())
 
@@ -27,7 +26,7 @@ func RegisterRoute(app *fiber.App, sqlHandler *gen.Client, ctx context.Context, 
 
 	app.Use(middleware.JWTProtected(service.UserService{
 		UserRepository: repository.UserRepository{
-			SQLHandler:   sqlHandler,
+			// SQLHandler:   sqlHandler,
 			Ctx:          ctx,
 			RedisHandler: redisHandler,
 		},

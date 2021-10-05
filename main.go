@@ -13,12 +13,12 @@ func main() {
 
 	infrastructure.Load(logger)
 
-	sqlHandler, enforcer, err := infrastructure.NewSQLHandler(ctx)
+	_, enforcer, err := infrastructure.NewSQLHandler(ctx)
 	if err != nil {
 		logger.LogError("%s", err)
 	}
 
 	redisHandler := infrastructure.RedisInit()
 
-	bootstrap.Dispatch(sqlHandler, ctx, logger, redisHandler, enforcer)
+	bootstrap.Dispatch(ctx, logger, redisHandler, enforcer)
 }

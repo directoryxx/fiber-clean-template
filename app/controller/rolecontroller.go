@@ -9,7 +9,6 @@ import (
 	"github.com/directoryxx/fiber-clean-template/app/service"
 	"github.com/directoryxx/fiber-clean-template/app/utils/response"
 	"github.com/directoryxx/fiber-clean-template/app/utils/validation"
-	"github.com/directoryxx/fiber-clean-template/database/gen"
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
 )
@@ -20,12 +19,12 @@ type RoleController struct {
 	Logger      interfaces.Logger
 }
 
-func NewRoleController(sqlHandler *gen.Client, logger interfaces.Logger) *RoleController {
+func NewRoleController(logger interfaces.Logger) *RoleController {
 	return &RoleController{
 		Roleservice: service.RoleService{
 			RoleRepository: repository.RoleRepository{
-				SQLHandler: sqlHandler,
-				Ctx:        context.Background(),
+				// SQLHandler: sqlHandler,
+				Ctx: context.Background(),
 			},
 		},
 		Logger: logger,

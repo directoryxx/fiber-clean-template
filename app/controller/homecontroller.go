@@ -10,7 +10,6 @@ import (
 	"github.com/directoryxx/fiber-clean-template/app/utils/jwt"
 	"github.com/directoryxx/fiber-clean-template/app/utils/response"
 	"github.com/directoryxx/fiber-clean-template/app/utils/session"
-	"github.com/directoryxx/fiber-clean-template/database/gen"
 	"github.com/go-redis/redis/v8"
 	"github.com/gofiber/fiber/v2"
 )
@@ -21,11 +20,11 @@ type HomeController struct {
 	Logger      interfaces.Logger
 }
 
-func NewHomeController(sqlHandler *gen.Client, logger interfaces.Logger, redisHandler *redis.Client) *HomeController {
+func NewHomeController(logger interfaces.Logger, redisHandler *redis.Client) *HomeController {
 	return &HomeController{
 		Userservice: service.UserService{
 			UserRepository: repository.UserRepository{
-				SQLHandler:   sqlHandler,
+				// SQLHandler:   sqlHandler,
 				Ctx:          context.Background(),
 				RedisHandler: redisHandler,
 			},

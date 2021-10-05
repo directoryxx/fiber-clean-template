@@ -5,6 +5,7 @@ import (
 
 	"time"
 
+	"github.com/directoryxx/fiber-clean-template/app/infrastructure"
 	"github.com/directoryxx/fiber-clean-template/app/rules"
 	"github.com/directoryxx/fiber-clean-template/database/gen"
 	"github.com/directoryxx/fiber-clean-template/database/gen/user"
@@ -12,30 +13,48 @@ import (
 )
 
 type UserRepository struct {
-	SQLHandler   *gen.Client
+	// SQLHandler   *gen.Client
 	Ctx          context.Context
 	RedisHandler *redis.Client
 }
 
 func (ur *UserRepository) Insert(User *rules.RegisterValidation) (user *gen.User, err error) {
-	create, err := ur.SQLHandler.User.Create().SetName(User.Name).SetUsername(User.Username).SetPassword(User.Password).SetRoleID(4).Save(ur.Ctx)
-
+	conn, err := infrastructure.Open()
+	if err != nil {
+		panic(err)
+	}
+	create, err := conn.User.Create().SetName(User.Name).SetUsername(User.Username).SetPassword(User.Password).SetRoleID(4).Save(ur.Ctx)
+	defer conn.Close()
 	return create, err
 }
 
 func (ur *UserRepository) CountByUsername(input string) (res int64) {
-	check, _ := ur.SQLHandler.User.Query().Where(user.Username(input)).Count(ur.Ctx)
-
+	conn, err := infrastructure.Open()
+	if err != nil {
+		panic(err)
+	}
+	check, _ := conn.User.Query().Where(user.Username(input)).Count(ur.Ctx)
+	defer conn.Close()
 	return int64(check)
 }
 
 func (ur *UserRepository) FindByUsername(input string) (res *gen.User, err error) {
-	username, err := ur.SQLHandler.User.Query().Where(user.Username(input)).Only(ur.Ctx)
+	conn, err := infrastructure.Open()
+	if err != nil {
+		panic(err)
+	}
+	username, err := conn.User.Query().Where(user.Username(input)).Only(ur.Ctx)
+	defer conn.Close()
 	return username, err
 }
 
 func (ur *UserRepository) FindById(input uint64) (res *gen.User, err error) {
-	user, err := ur.SQLHandler.User.Query().Where(user.ID(int(input))).Only(ur.Ctx)
+	conn, err := infrastructure.Open()
+	if err != nil {
+		panic(err)
+	}
+	user, err := conn.User.Query().Where(user.ID(int(input))).Only(ur.Ctx)
+	defer conn.Close()
 	return user, err
 }
 
