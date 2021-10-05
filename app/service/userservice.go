@@ -42,6 +42,6 @@ func (us *UserService) FetchToken(key string) (res string, err error) {
 	return us.UserRepository.GettRedis(key)
 }
 
-func (us *UserService) CurrentUser(input uint64) (res *gen.User, err error) {
-	return us.UserRepository.FindById(input)
+func (us *UserService) CurrentUser(input uint64) (res *gen.User, role *gen.Role, err error) {
+	return us.UserRepository.FindByIdWithRelation(input)
 }
