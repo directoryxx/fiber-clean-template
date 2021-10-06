@@ -3,7 +3,9 @@ package controller
 import (
 	"context"
 
+	"github.com/casbin/casbin/v2"
 	"github.com/directoryxx/fiber-clean-template/app/interfaces"
+	"github.com/directoryxx/fiber-clean-template/app/middleware"
 	"github.com/directoryxx/fiber-clean-template/app/repository"
 	"github.com/directoryxx/fiber-clean-template/app/rules"
 	"github.com/directoryxx/fiber-clean-template/app/service"
@@ -20,9 +22,10 @@ type RoleController struct {
 	Roleservice service.RoleService
 	Logger      interfaces.Logger
 	Fiber       *fiber.App
+	Enforcer    *casbin.Enforcer
 }
 
-func NewRoleController(logger interfaces.Logger, fiber *fiber.App) *RoleController {
+func NewRoleController(logger interfaces.Logger, fiber *fiber.App, enforcer *casbin.Enforcer) *RoleController {
 	return &RoleController{
 		Roleservice: service.RoleService{
 			RoleRepository: repository.RoleRepository{
@@ -30,16 +33,17 @@ func NewRoleController(logger interfaces.Logger, fiber *fiber.App) *RoleControll
 				Ctx: context.Background(),
 			},
 		},
-		Logger: logger,
-		Fiber:  fiber,
+		Logger:   logger,
+		Fiber:    fiber,
+		Enforcer: enforcer,
 	}
 }
 
 func (controller RoleController) RoleRouter() {
-	controller.Fiber.Post("/role", controller.createRole())
-	controller.Fiber.Get("/role/:id", controller.getRole())
-	controller.Fiber.Put("/role/:id", controller.updateRole())
-	controller.Fiber.Delete("/role/:id", controller.deleteRole())
+	controller.Fiber.Post("/role", middleware.CheckPermission(controller.Enforcer, pageRole), controller.createRole())
+	controller.Fiber.Get("/role/:id", middleware.CheckPermission(controller.Enforcer, pageRole), controller.getRole())
+	controller.Fiber.Put("/role/:id", middleware.CheckPermission(controller.Enforcer, pageRole), controller.updateRole())
+	controller.Fiber.Delete("/role/:id", middleware.CheckPermission(controller.Enforcer, pageRole), controller.deleteRole())
 }
 
 func (controller RoleController) GetAll() fiber.Handler {

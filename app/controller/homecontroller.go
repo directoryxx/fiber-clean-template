@@ -2,7 +2,6 @@ package controller
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/directoryxx/fiber-clean-template/app/interfaces"
 	"github.com/directoryxx/fiber-clean-template/app/repository"
@@ -12,8 +11,6 @@ import (
 	"github.com/go-redis/redis/v8"
 	"github.com/gofiber/fiber/v2"
 )
-
-var pageHome string = "home"
 
 // A UserController belong to the interface layer.
 type HomeController struct {
@@ -43,9 +40,6 @@ func (controller HomeController) HomeRouter() {
 func (controller HomeController) current() fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		auth := session.GetAuth()
-		fmt.Println(auth.Auth)
-		fmt.Println(auth.Role)
-
 		controller.Logger.LogAccess("%s %s %s\n", c.IP(), c.Method(), c.OriginalURL())
 
 		// token, err := jwt.ExtractTokenMetadata(c)

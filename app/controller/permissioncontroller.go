@@ -6,6 +6,7 @@ import (
 
 	"github.com/casbin/casbin/v2"
 	"github.com/directoryxx/fiber-clean-template/app/interfaces"
+	"github.com/directoryxx/fiber-clean-template/app/middleware"
 	"github.com/directoryxx/fiber-clean-template/app/repository"
 	"github.com/directoryxx/fiber-clean-template/app/rules"
 	"github.com/directoryxx/fiber-clean-template/app/service"
@@ -39,8 +40,8 @@ func NewPermissionController(logger interfaces.Logger, enforcer *casbin.Enforcer
 }
 
 func (controller PermissionController) PermissionRouter() {
-	controller.Fiber.Get("/permission/:id", controller.getListPermission())
-	controller.Fiber.Post("/permission/:id", controller.updatePermission())
+	controller.Fiber.Get("/permission/:id", middleware.CheckPermission(controller.Enforcer, pagePermission), controller.getListPermission())
+	controller.Fiber.Post("/permission/:id", middleware.CheckPermission(controller.Enforcer, pagePermission), controller.updatePermission())
 }
 
 func (controller PermissionController) getListPermission() fiber.Handler {
@@ -139,22 +140,4 @@ func (controller PermissionController) updatePermission() fiber.Handler {
 			Data:    getPolicy,
 		})
 	}
-}
-
-func permissionVal(initval *validator.Validate) {
-	initval.RegisterValidation("resource", func(fl validator.FieldLevel) bool {
-		return resourceRule(fl.Field().String())
-	})
-}
-
-func resourceRule(value string) bool {
-	resources := [6]string{"read", "create", "update", "delete", "manage"}
-
-	for _, s := range resources {
-		if s == value {
-			return true
-		}
-	}
-
-	return false
 }

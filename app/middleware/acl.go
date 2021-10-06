@@ -1,45 +1,46 @@
 package middleware
 
+import (
+	"github.com/casbin/casbin/v2"
+	"github.com/directoryxx/fiber-clean-template/app/utils/response"
+	"github.com/directoryxx/fiber-clean-template/app/utils/session"
+	"github.com/gofiber/fiber/v2"
+)
+
 // TODO : Refactor This
-// func CheckPermission(enforcer *casbin.Enforcer, service service.UserService, page string, resource string) fiber.Handler {
-// 	return func(c *fiber.Ctx) error {
-// 		token, err := jwt.ExtractTokenMetadata(c)
-// 		if err != nil {
-// 			c.Status(403)
-// 			return c.JSON(fiber.Map{"error": "Unauthorized access"})
-// 		}
+func CheckPermission(enforcer *casbin.Enforcer, page string) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		auth := session.GetAuth()
 
-// 		userId, _ := jwt.FetchAuth(service, token)
+		role := auth.Role
 
-// 		// roleUser, _ := service.GetRoleUser(uint(userId))
+		ok, err := enforcer.Enforce(role.Name, page, c.Method())
 
-// 		ok, err := enforcer.Enforce(roleUser.RoleUser.Role.Name, page, resource)
+		okManage, _ := enforcer.Enforce(role.Name, page, "manage")
 
-// 		okManage, _ := enforcer.Enforce(roleUser.RoleUser.Role.Name, page, "manage")
+		if err != nil {
+			c.Status(500)
+			return c.JSON(response.ErrorResponse{
+				Success: false,
+				Message: err.Error(),
+				// Error:   err,
+			})
+		}
 
-// 		if err != nil {
-// 			c.Status(500)
-// 			return c.JSON(response.ErrorResponse{
-// 				Success: false,
-// 				Message: err.Error(),
-// 				// Error:   err,
-// 			})
-// 		}
+		if okManage {
+			return c.Next()
+		}
 
-// 		if okManage {
-// 			return c.Next()
-// 		}
+		if !ok {
+			// errorForbidden := errors.New("unauthorized access")
+			c.Status(403)
+			return c.JSON(response.ErrorResponse{
+				Success: false,
+				Message: "Forbidden access",
+				// Error:   errorForbidden,
+			})
+		}
 
-// 		if !ok {
-// 			// errorForbidden := errors.New("unauthorized access")
-// 			c.Status(403)
-// 			return c.JSON(response.ErrorResponse{
-// 				Success: false,
-// 				Message: "Unauthorized access",
-// 				// Error:   errorForbidden,
-// 			})
-// 		}
-
-// 		return c.Next()
-// 	}
-// }
+		return c.Next()
+	}
+}
