@@ -126,6 +126,6 @@ func FetchAuth(service service.UserService, authD *AccessDetails) (uint64, uint6
 	if authD.UserId != userID {
 		return 0, 0, fmt.Errorf("userid mismatch")
 	}
-	fmt.Println(authD)
+
 	return userID, authD.UserId, nil
 }
