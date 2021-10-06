@@ -18,7 +18,7 @@ func main() {
 		logger.LogError("%s", err)
 	}
 
-	redisHandler := infrastructure.RedisInit()
+	// redisHandler := infrastructure.RedisInit()
 
-	bootstrap.Dispatch(ctx, logger, redisHandler, enforcer)
+	bootstrap.Dispatch(ctx, logger, enforcer)
 }
