@@ -6,7 +6,6 @@ import (
 	"github.com/directoryxx/fiber-clean-template/app/interfaces"
 	"github.com/directoryxx/fiber-clean-template/app/repository"
 	"github.com/directoryxx/fiber-clean-template/app/rules"
-	"github.com/go-redis/redis/v8"
 
 	"github.com/directoryxx/fiber-clean-template/app/service"
 	"github.com/directoryxx/fiber-clean-template/app/utils/encrypt"
@@ -25,13 +24,12 @@ type UserController struct {
 	Logger      interfaces.Logger
 }
 
-func NewUserController(logger interfaces.Logger, redisHandler *redis.Client) *UserController {
+func NewUserController(logger interfaces.Logger) *UserController {
 	return &UserController{
 		Userservice: service.UserService{
 			UserRepository: repository.UserRepository{
 				// SQLHandler:   sqlHandler,
-				Ctx:          context.Background(),
-				RedisHandler: redisHandler,
+				Ctx: context.Background(),
 			},
 		},
 		Logger: logger,

@@ -11,21 +11,20 @@ import (
 	"github.com/casbin/casbin/v2"
 	"github.com/directoryxx/fiber-clean-template/app/interfaces"
 	"github.com/directoryxx/fiber-clean-template/app/routes"
-	"github.com/go-redis/redis/v8"
 	"github.com/gofiber/fiber/v2"
 )
 
 const idleTimeout = 5 * time.Second
 
 // Dispatch is handle routing
-func Dispatch(ctx context.Context, log interfaces.Logger, redisHandler *redis.Client, enforcer *casbin.Enforcer) {
+func Dispatch(ctx context.Context, log interfaces.Logger, enforcer *casbin.Enforcer) {
 	app := fiber.New(fiber.Config{
 		IdleTimeout: idleTimeout,
 	})
 
 	// app.Use(pprof.New())
 
-	routes.RegisterRoute(app, ctx, log, redisHandler, enforcer)
+	routes.RegisterRoute(app, ctx, log, enforcer)
 
 	go func() {
 		if errApp := app.Listen("0.0.0.0:" + os.Getenv("APP_PORT")); errApp != nil {
@@ -44,7 +43,7 @@ func Dispatch(ctx context.Context, log interfaces.Logger, redisHandler *redis.Cl
 
 	// Your cleanup tasks go here
 	// sqlHandler.Close()
-	redisHandler.Close()
+	// redisHandler.Close()
 	fmt.Println("Fiber was successful shutdown.")
 
 	// if errApp != nil {
