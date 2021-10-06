@@ -13,13 +13,16 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+var pageHome string = "home"
+
 // A UserController belong to the interface layer.
 type HomeController struct {
 	Userservice service.UserService
 	Logger      interfaces.Logger
+	Fiber       *fiber.App
 }
 
-func NewHomeController(logger interfaces.Logger, redisHandler *redis.Client) *HomeController {
+func NewHomeController(logger interfaces.Logger, redisHandler *redis.Client, fiber *fiber.App) *HomeController {
 	return &HomeController{
 		Userservice: service.UserService{
 			UserRepository: repository.UserRepository{
@@ -29,10 +32,15 @@ func NewHomeController(logger interfaces.Logger, redisHandler *redis.Client) *Ho
 			},
 		},
 		Logger: logger,
+		Fiber:  fiber,
 	}
 }
 
-func (controller HomeController) Current() fiber.Handler {
+func (controller HomeController) HomeRouter() {
+	controller.Fiber.Get("/current", controller.current())
+}
+
+func (controller HomeController) current() fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		auth := session.GetAuth()
 		fmt.Println(auth.Auth)
