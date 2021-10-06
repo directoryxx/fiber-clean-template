@@ -1,0 +1,160 @@
+package controller
+
+import (
+	"context"
+	"fmt"
+
+	"github.com/casbin/casbin/v2"
+	"github.com/directoryxx/fiber-clean-template/app/interfaces"
+	"github.com/directoryxx/fiber-clean-template/app/repository"
+	"github.com/directoryxx/fiber-clean-template/app/rules"
+	"github.com/directoryxx/fiber-clean-template/app/service"
+	"github.com/directoryxx/fiber-clean-template/app/utils/response"
+	"github.com/directoryxx/fiber-clean-template/app/utils/validation"
+	"github.com/go-playground/validator/v10"
+	"github.com/gofiber/fiber/v2"
+)
+
+var pagePermission string = "permission"
+
+// A UserController belong to the interface layer.
+type PermissionController struct {
+	Enforcer    *casbin.Enforcer
+	Logger      interfaces.Logger
+	Fiber       *fiber.App
+	RoleService *service.RoleService
+}
+
+func NewPermissionController(logger interfaces.Logger, enforcer *casbin.Enforcer, app *fiber.App) *PermissionController {
+	return &PermissionController{
+		Enforcer: enforcer,
+		Logger:   logger,
+		Fiber:    app,
+		RoleService: &service.RoleService{
+			RoleRepository: repository.RoleRepository{
+				Ctx: context.Background(),
+			},
+		},
+	}
+}
+
+func (controller PermissionController) PermissionRouter() {
+	controller.Fiber.Get("/permission/:id", controller.getListPermission())
+	controller.Fiber.Post("/permission/:id", controller.updatePermission())
+}
+
+func (controller PermissionController) getListPermission() fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		controller.Logger.LogAccess("%s %s %s\n", c.IP(), c.Method(), c.OriginalURL())
+
+		id, err := c.ParamsInt("id")
+
+		fmt.Println(id)
+
+		roleData := controller.RoleService.GetById(id)
+
+		if roleData == nil {
+			c.Status(404)
+			return c.JSON(&response.ErrorResponse{
+				Success: false,
+				Message: "Data tidak ditemukan",
+			})
+		}
+
+		getPolicy := controller.Enforcer.GetFilteredPolicy(0, roleData.Name)
+
+		if err != nil {
+			c.Status(422)
+			return c.JSON(&response.ErrorResponse{
+				Success: false,
+				Message: "Silahkan periksa kembali",
+			})
+		}
+
+		return c.JSON(&response.SuccessResponse{
+			Success: true,
+			Message: "Berhasil mengambil data",
+			Data:    getPolicy,
+		})
+	}
+}
+
+func (controller PermissionController) updatePermission() fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		controller.Logger.LogAccess("%s %s %s\n", c.IP(), c.Method(), c.OriginalURL())
+
+		var permission rules.PermissionUpdate
+		err := c.BodyParser(&permission)
+
+		if err != nil {
+			c.Status(422)
+			return c.JSON(&response.ErrorResponse{
+				Success: false,
+				Message: "Silahkan periksa kembali",
+			})
+		}
+
+		id, err := c.ParamsInt("id")
+
+		roleData := controller.RoleService.GetById(id)
+
+		if roleData == nil {
+			c.Status(404)
+			return c.JSON(&response.ErrorResponse{
+				Success: false,
+				Message: "Data tidak ditemukan",
+			})
+		}
+
+		initval = validator.New()
+		roleValidation(initval, *controller.RoleService)
+		errVal := initval.Struct(permission)
+
+		if errVal != nil {
+			message := make(map[string]string)
+			message["permission"] = "Pastikan kembali data yang dikirim"
+			errorResponse := validation.ValidateRequest(errVal, message)
+			return c.JSON(errorResponse)
+		}
+
+		controller.Enforcer.RemoveFilteredPolicy(0, roleData.Name)
+
+		for _, s := range permission.Permission {
+			controller.Enforcer.AddPolicy(roleData.Name, s.Page, s.Resource)
+		}
+
+		getPolicy := controller.Enforcer.GetFilteredPolicy(0, roleData.Name)
+
+		if err != nil {
+			c.Status(422)
+			return c.JSON(&response.ErrorResponse{
+				Success: false,
+				Message: "Silahkan periksa kembali",
+			})
+		}
+
+		return c.JSON(&response.SuccessResponse{
+			Success: true,
+			Message: "Berhasil mengambil data",
+			Data:    getPolicy,
+		})
+	}
+}
+
+func permissionVal(initval *validator.Validate) {
+	initval.RegisterValidation("resource", func(fl validator.FieldLevel) bool {
+		return resourceRule(fl.Field().String())
+	})
+}
+
+func resourceRule(value string) bool {
+	resources := [6]string{"read", "create", "update", "delete", "manage"}
+
+	for _, s := range resources {
+		if s == value {
+			return true
+		}
+	}
+
+	return false
+}

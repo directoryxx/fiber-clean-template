@@ -18,6 +18,7 @@ func RegisterRoute(app *fiber.App, ctx context.Context, log interfaces.Logger, r
 	UserController := controller.NewUserController(log, redisHandler)
 	HomeController := controller.NewHomeController(log, redisHandler, app)
 	RoleController := controller.NewRoleController(log, app)
+	PermissionController := controller.NewPermissionController(log, enforcer, app)
 
 	app.Get("/dashboard", monitor.New())
 
@@ -34,5 +35,6 @@ func RegisterRoute(app *fiber.App, ctx context.Context, log interfaces.Logger, r
 
 	HomeController.HomeRouter()
 	RoleController.RoleRouter()
+	PermissionController.PermissionRouter()
 
 }

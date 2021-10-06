@@ -7,7 +7,6 @@ import (
 	"github.com/directoryxx/fiber-clean-template/app/interfaces"
 	"github.com/directoryxx/fiber-clean-template/app/repository"
 	"github.com/directoryxx/fiber-clean-template/app/service"
-	"github.com/directoryxx/fiber-clean-template/app/utils/jwt"
 	"github.com/directoryxx/fiber-clean-template/app/utils/response"
 	"github.com/directoryxx/fiber-clean-template/app/utils/session"
 	"github.com/go-redis/redis/v8"
@@ -44,24 +43,25 @@ func (controller HomeController) HomeRouter() {
 func (controller HomeController) current() fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		auth := session.GetAuth()
-		fmt.Println(auth)
+		fmt.Println(auth.Auth)
+		fmt.Println(auth.Role)
 
 		controller.Logger.LogAccess("%s %s %s\n", c.IP(), c.Method(), c.OriginalURL())
 
-		token, err := jwt.ExtractTokenMetadata(c)
-		if err != nil {
-			controller.Logger.LogError("%s", err)
-		}
+		// token, err := jwt.ExtractTokenMetadata(c)
+		// if err != nil {
+		// 	controller.Logger.LogError("%s", err)
+		// }
 
-		res, errGet := controller.Userservice.CurrentUser(token.UserId)
+		// res, errGet := controller.Userservice.CurrentUser(token.UserId)
 
-		if errGet != nil {
-			controller.Logger.LogError("%s", errGet)
-		}
+		// if errGet != nil {
+		// 	controller.Logger.LogError("%s", errGet)
+		// }
 
 		return c.JSON(&response.CurrentResponse{
-			Name:     res.Name,
-			Username: res.Username,
+			Name:     auth.Auth.Name,
+			Username: auth.Auth.Username,
 		})
 	}
 }

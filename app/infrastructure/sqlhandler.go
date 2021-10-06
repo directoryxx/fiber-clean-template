@@ -38,11 +38,12 @@ func NewSQLHandler(ctx context.Context) (*gen.Client, *casbin.Enforcer, error) {
 		log.Fatalf("failed creating schema resources: %v", err)
 	}
 
+	client.Close()
 	enforcer := CasbinLoad(driver, dsn)
 
 	// fmt.Println(enforcer)
 
-	return client, enforcer, nil
+	return nil, enforcer, nil
 }
 
 func Open() (*gen.Client, error) {

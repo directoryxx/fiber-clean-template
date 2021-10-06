@@ -8,7 +8,13 @@ import (
 )
 
 var sessionGet *session.Session
-var auth *gen.User
+
+var dataAuth *SessionData
+
+type SessionData struct {
+	Auth *gen.User
+	Role *gen.Role
+}
 
 func InitSession(c *fiber.Ctx, user *service.UserService, user_id int) {
 	store := session.New()
@@ -17,7 +23,12 @@ func InitSession(c *fiber.Ctx, user *service.UserService, user_id int) {
 		panic(err)
 	}
 
-	auth, _ = user.CurrentUser(uint64(user_id))
+	auth, role, _ := user.CurrentUser(uint64(user_id))
+
+	dataAuth = &SessionData{
+		Auth: auth,
+		Role: role,
+	}
 
 	sess.Set("user_id", user_id)
 
@@ -29,6 +40,6 @@ func GetSession() *session.Session {
 	return sessionGet
 }
 
-func GetAuth() *gen.User {
-	return auth
+func GetAuth() *SessionData {
+	return dataAuth
 }

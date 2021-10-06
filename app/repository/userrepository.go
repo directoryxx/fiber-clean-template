@@ -58,6 +58,17 @@ func (ur *UserRepository) FindById(input uint64) (res *gen.User, err error) {
 	return user, err
 }
 
+func (ur *UserRepository) FindByIdWithRelation(input uint64) (res *gen.User, role *gen.Role, err error) {
+	conn, err := infrastructure.Open()
+	if err != nil {
+		panic(err)
+	}
+	userData, err := conn.User.Query().Where(user.ID(int(input))).Only(ur.Ctx)
+	role, err = conn.User.Query().Where(user.ID(int(input))).QueryRole().Only(ur.Ctx)
+	defer conn.Close()
+	return userData, role, err
+}
+
 func (ur *UserRepository) InsertRedis(key string, value interface{}, expires time.Duration) error {
 	return ur.RedisHandler.Set(ur.Ctx, key, value, expires).Err()
 }
