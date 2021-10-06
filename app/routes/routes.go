@@ -17,7 +17,7 @@ import (
 func RegisterRoute(app *fiber.App, ctx context.Context, log interfaces.Logger, redisHandler *redis.Client, enforcer *casbin.Enforcer) {
 	UserController := controller.NewUserController(log, redisHandler)
 	HomeController := controller.NewHomeController(log, redisHandler, app)
-	RoleController := controller.NewRoleController(log, app)
+	RoleController := controller.NewRoleController(log, app, enforcer)
 	PermissionController := controller.NewPermissionController(log, enforcer, app)
 
 	app.Get("/dashboard", monitor.New())
@@ -32,6 +32,9 @@ func RegisterRoute(app *fiber.App, ctx context.Context, log interfaces.Logger, r
 			RedisHandler: redisHandler,
 		},
 	}))
+
+	enforcer.AddPolicy("admin", "role", "manage")
+	enforcer.AddPolicy("admin", "permission", "manage")
 
 	HomeController.HomeRouter()
 	RoleController.RoleRouter()
