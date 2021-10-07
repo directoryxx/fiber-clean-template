@@ -20,9 +20,9 @@ RUN chmod +x /tmp/install.sh
 
 RUN bash /tmp/install.sh
 
+RUN go install github.com/directoryxx/fiber-clean-template/cmd
+
 # RUN go get github.com/oxequa/realize
-
-
 WORKDIR /app
 
 
