@@ -99,6 +99,15 @@ func (controller UserController) Register() fiber.Handler {
 	}
 }
 
+// Login
+// @Summary Login user
+// @Description Login user
+// @Tags Authentication
+// @Accept application/json
+// @Param login body rules.LoginValidation true "Login"
+// @Produce json
+// @Success 200 {object} map[string]interface{}
+// @Router /login [post]
 func (controller UserController) Login() fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		controller.Logger.LogAccess("%s %s %s\n", c.IP(), c.Method(), c.OriginalURL())
