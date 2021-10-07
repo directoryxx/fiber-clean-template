@@ -46,7 +46,6 @@ func RegisterRoute(app *fiber.App, ctx context.Context, log interfaces.Logger, e
 
 	app.Use(middleware.JWTProtected(service.UserService{
 		UserRepository: repository.UserRepository{
-			// SQLHandler:   sqlHandler,
 			Ctx: ctx,
 		},
 	}))

@@ -40,24 +40,28 @@ func NewRoleController(logger interfaces.Logger, fiber *fiber.App, enforcer *cas
 }
 
 func (controller RoleController) RoleRouter() {
-	controller.Fiber.Group(pageRole)
-	controller.Fiber.Post("/", middleware.CheckPermission(controller.Enforcer, pageRole), controller.createRole())
-	controller.Fiber.Get("/:id", middleware.CheckPermission(controller.Enforcer, pageRole), controller.getRole())
-	controller.Fiber.Put("/:id", middleware.CheckPermission(controller.Enforcer, pageRole), controller.updateRole())
-	controller.Fiber.Delete("/:id", middleware.CheckPermission(controller.Enforcer, pageRole), controller.deleteRole())
+	// controller.Fiber.Group(pageRole)
+	controller.Fiber.Get("/role", middleware.CheckPermission(controller.Enforcer, pageRole), controller.getAll())
+	controller.Fiber.Post("/role", middleware.CheckPermission(controller.Enforcer, pageRole), controller.createRole())
+	controller.Fiber.Get("/role/:id", middleware.CheckPermission(controller.Enforcer, pageRole), controller.getRole())
+	controller.Fiber.Put("/role/:id", middleware.CheckPermission(controller.Enforcer, pageRole), controller.updateRole())
+	controller.Fiber.Delete("/role/:id", middleware.CheckPermission(controller.Enforcer, pageRole), controller.deleteRole())
 }
 
 // List Role
 // @Summary List Role
 // @Description List Role
 // @Tags Role
+// @Param Authorization header string true "With the bearer started"
 // @Accept application/json
 // @Produce json
 // @Success 200 {object} map[string]interface{}
 // @Router /role [get]
-func (controller RoleController) GetAll() fiber.Handler {
+func (controller RoleController) getAll() fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		controller.Logger.LogAccess("%s %s %s\n", c.IP(), c.Method(), c.OriginalURL())
+
+		dataRole := controller.Roleservice.GetAll()
 
 		// token, err := jwt.ExtractTokenMetadata(c)
 		// if err != nil {
@@ -70,9 +74,10 @@ func (controller RoleController) GetAll() fiber.Handler {
 		// 	controller.Logger.LogError("%s", errGet)
 		// }
 
-		return c.JSON(&response.CurrentResponse{
-			Name:     "test",
-			Username: "test",
+		return c.JSON(&response.SuccessResponse{
+			Success: true,
+			Data:    dataRole,
+			Message: "Role berhasil ditampilkan",
 		})
 	}
 }
@@ -82,6 +87,7 @@ func (controller RoleController) GetAll() fiber.Handler {
 // @Description Create Role
 // @Tags Role
 // @Accept application/json
+// @Param Authorization header string true "With the bearer started"
 // @Param role body rules.RoleValidation true "role"
 // @Produce json
 // @Success 200 {object} map[string]interface{}

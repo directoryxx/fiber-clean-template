@@ -2,7 +2,6 @@ package controller
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/casbin/casbin/v2"
 	"github.com/directoryxx/fiber-clean-template/app/interfaces"
@@ -40,15 +39,16 @@ func NewPermissionController(logger interfaces.Logger, enforcer *casbin.Enforcer
 }
 
 func (controller PermissionController) PermissionRouter() {
-	controller.Fiber.Group(pagePermission)
-	controller.Fiber.Get("/:id", middleware.CheckPermission(controller.Enforcer, pagePermission), controller.getListPermission())
-	controller.Fiber.Post("/:id", middleware.CheckPermission(controller.Enforcer, pagePermission), controller.updatePermission())
+	// controller.Fiber.Group(pagePermission)
+	controller.Fiber.Get("/permission/:id", middleware.CheckPermission(controller.Enforcer, pagePermission), controller.getListPermission())
+	controller.Fiber.Post("/permission/:id", middleware.CheckPermission(controller.Enforcer, pagePermission), controller.updatePermission())
 }
 
 // List Permission
 // @Summary List Permission
 // @Description List Permission by role
 // @Tags Permission
+// @Param Authorization header string true "With the bearer started"
 // @Accept application/json
 // @Produce json
 // @Success 200 {object} map[string]interface{}
@@ -58,8 +58,6 @@ func (controller PermissionController) getListPermission() fiber.Handler {
 		controller.Logger.LogAccess("%s %s %s\n", c.IP(), c.Method(), c.OriginalURL())
 
 		id, err := c.ParamsInt("id")
-
-		fmt.Println(id)
 
 		roleData := controller.RoleService.GetById(id)
 
@@ -94,6 +92,7 @@ func (controller PermissionController) getListPermission() fiber.Handler {
 // @Description Update Permission by role
 // @Tags Permission
 // @Accept application/json
+// @Param Authorization header string true "With the bearer started"
 // @Param permission body rules.PermissionUpdate true "Permission"
 // @Produce json
 // @Success 200 {object} map[string]interface{}

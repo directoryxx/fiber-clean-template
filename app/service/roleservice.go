@@ -10,6 +10,12 @@ type RoleService struct {
 	RoleRepository repository.RoleRepository
 }
 
+func (rs RoleService) GetAll() (roles []*gen.Role) {
+	roleData, _ := rs.RoleRepository.GetAll()
+
+	return roleData
+}
+
 func (rs RoleService) CreateRole(Role *rules.RoleValidation) (user *gen.Role, err error) {
 	data, err := rs.RoleRepository.Insert(Role)
 

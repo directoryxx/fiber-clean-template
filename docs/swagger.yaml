@@ -9,6 +9,15 @@ definitions:
     - password
     - username
     type: object
+  rules.PermissionUpdate:
+    properties:
+      permission:
+        items:
+          $ref: '#/definitions/rules.UpdateRequestPermission'
+        type: array
+    required:
+    - permission
+    type: object
   rules.RegisterValidation:
     properties:
       name:
@@ -22,9 +31,42 @@ definitions:
     - password
     - username
     type: object
+  rules.RoleValidation:
+    properties:
+      name:
+        type: string
+    required:
+    - name
+    type: object
+  rules.UpdateRequestPermission:
+    properties:
+      page:
+        type: string
+      resource:
+        type: string
+    required:
+    - page
+    - resource
+    type: object
 info:
   contact: {}
 paths:
+  /current:
+    get:
+      consumes:
+      - application/json
+      description: Current User
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Current User
+      tags:
+      - Authentication
   /login:
     post:
       consumes:
@@ -48,6 +90,50 @@ paths:
       summary: Login user
       tags:
       - Authentication
+  /permission/:id:
+    get:
+      consumes:
+      - application/json
+      description: List Permission by role
+      parameters:
+      - description: With the bearer started
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: List Permission
+      tags:
+      - Permission
+    post:
+      consumes:
+      - application/json
+      description: Update Permission by role
+      parameters:
+      - description: Permission
+        in: body
+        name: permission
+        required: true
+        schema:
+          $ref: '#/definitions/rules.PermissionUpdate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Update Permission
+      tags:
+      - Permission
   /register:
     post:
       consumes:
@@ -71,4 +157,95 @@ paths:
       summary: Register user
       tags:
       - Authentication
+  /role:
+    get:
+      consumes:
+      - application/json
+      description: List Role
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: List Role
+      tags:
+      - Role
+    post:
+      consumes:
+      - application/json
+      description: Create Role
+      parameters:
+      - description: role
+        in: body
+        name: role
+        required: true
+        schema:
+          $ref: '#/definitions/rules.RoleValidation'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Create Role
+      tags:
+      - Role
+  /role/:id:
+    delete:
+      consumes:
+      - application/json
+      description: Delete Role
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Delete Role
+      tags:
+      - Role
+    get:
+      consumes:
+      - application/json
+      description: Get Role
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get Role
+      tags:
+      - Role
+    put:
+      consumes:
+      - application/json
+      description: Update Role
+      parameters:
+      - description: role
+        in: body
+        name: role
+        required: true
+        schema:
+          $ref: '#/definitions/rules.RoleValidation'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Update Role
+      tags:
+      - Role
 swagger: "2.0"
