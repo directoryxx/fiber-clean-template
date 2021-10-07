@@ -36,6 +36,15 @@ func NewUserController(logger interfaces.Logger) *UserController {
 	}
 }
 
+// Register
+// @Summary Register user
+// @Description Register user
+// @Tags Authentication
+// @Accept application/json
+// @Param register body rules.RegisterValidation true "Register"
+// @Produce json
+// @Success 200 {object} map[string]interface{}
+// @Router /register [post]
 func (controller UserController) Register() fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		controller.Logger.LogAccess("%s %s %s\n", c.IP(), c.Method(), c.OriginalURL())

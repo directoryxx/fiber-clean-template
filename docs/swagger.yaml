@@ -9,6 +9,19 @@ definitions:
     - password
     - username
     type: object
+  rules.RegisterValidation:
+    properties:
+      name:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - name
+    - password
+    - username
+    type: object
 info:
   contact: {}
 paths:
@@ -33,6 +46,29 @@ paths:
             additionalProperties: true
             type: object
       summary: Login user
+      tags:
+      - Authentication
+  /register:
+    post:
+      consumes:
+      - application/json
+      description: Register user
+      parameters:
+      - description: Register
+        in: body
+        name: register
+        required: true
+        schema:
+          $ref: '#/definitions/rules.RegisterValidation'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Register user
       tags:
       - Authentication
 swagger: "2.0"
