@@ -40,12 +40,21 @@ func NewRoleController(logger interfaces.Logger, fiber *fiber.App, enforcer *cas
 }
 
 func (controller RoleController) RoleRouter() {
-	controller.Fiber.Post("/role", middleware.CheckPermission(controller.Enforcer, pageRole), controller.createRole())
-	controller.Fiber.Get("/role/:id", middleware.CheckPermission(controller.Enforcer, pageRole), controller.getRole())
-	controller.Fiber.Put("/role/:id", middleware.CheckPermission(controller.Enforcer, pageRole), controller.updateRole())
-	controller.Fiber.Delete("/role/:id", middleware.CheckPermission(controller.Enforcer, pageRole), controller.deleteRole())
+	controller.Fiber.Group(pageRole)
+	controller.Fiber.Post("/", middleware.CheckPermission(controller.Enforcer, pageRole), controller.createRole())
+	controller.Fiber.Get("/:id", middleware.CheckPermission(controller.Enforcer, pageRole), controller.getRole())
+	controller.Fiber.Put("/:id", middleware.CheckPermission(controller.Enforcer, pageRole), controller.updateRole())
+	controller.Fiber.Delete("/:id", middleware.CheckPermission(controller.Enforcer, pageRole), controller.deleteRole())
 }
 
+// List Role
+// @Summary List Role
+// @Description List Role
+// @Tags Role
+// @Accept application/json
+// @Produce json
+// @Success 200 {object} map[string]interface{}
+// @Router /role [get]
 func (controller RoleController) GetAll() fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		controller.Logger.LogAccess("%s %s %s\n", c.IP(), c.Method(), c.OriginalURL())
@@ -68,6 +77,15 @@ func (controller RoleController) GetAll() fiber.Handler {
 	}
 }
 
+// Create Role
+// @Summary Create Role
+// @Description Create Role
+// @Tags Role
+// @Accept application/json
+// @Param role body rules.RoleValidation true "role"
+// @Produce json
+// @Success 200 {object} map[string]interface{}
+// @Router /role [post]
 func (controller RoleController) createRole() fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		controller.Logger.LogAccess("%s %s %s\n", c.IP(), c.Method(), c.OriginalURL())
@@ -115,6 +133,15 @@ func (controller RoleController) createRole() fiber.Handler {
 	}
 }
 
+// Update Role
+// @Summary Update Role
+// @Description Update Role
+// @Tags Role
+// @Accept application/json
+// @Param role body rules.RoleValidation true "role"
+// @Produce json
+// @Success 200 {object} map[string]interface{}
+// @Router /role/:id [put]
 func (controller RoleController) updateRole() fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		controller.Logger.LogAccess("%s %s %s\n", c.IP(), c.Method(), c.OriginalURL())
@@ -185,6 +212,14 @@ func (controller RoleController) updateRole() fiber.Handler {
 	}
 }
 
+// Get Role
+// @Summary Get Role
+// @Description Get Role
+// @Tags Role
+// @Accept application/json
+// @Produce json
+// @Success 200 {object} map[string]interface{}
+// @Router /role/:id [get]
 func (controller RoleController) getRole() fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		controller.Logger.LogAccess("%s %s %s\n", c.IP(), c.Method(), c.OriginalURL())
@@ -218,6 +253,14 @@ func (controller RoleController) getRole() fiber.Handler {
 	}
 }
 
+// Delete Role
+// @Summary Delete Role
+// @Description Delete Role
+// @Tags Role
+// @Accept application/json
+// @Produce json
+// @Success 200 {object} map[string]interface{}
+// @Router /role/:id [delete]
 func (controller RoleController) deleteRole() fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		controller.Logger.LogAccess("%s %s %s\n", c.IP(), c.Method(), c.OriginalURL())

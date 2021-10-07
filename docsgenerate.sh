@@ -1,0 +1,1 @@
+swag init -g ./app/routes/routes.go --output ./docs

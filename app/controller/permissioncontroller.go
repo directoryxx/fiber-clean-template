@@ -40,10 +40,19 @@ func NewPermissionController(logger interfaces.Logger, enforcer *casbin.Enforcer
 }
 
 func (controller PermissionController) PermissionRouter() {
-	controller.Fiber.Get("/permission/:id", middleware.CheckPermission(controller.Enforcer, pagePermission), controller.getListPermission())
-	controller.Fiber.Post("/permission/:id", middleware.CheckPermission(controller.Enforcer, pagePermission), controller.updatePermission())
+	controller.Fiber.Group(pagePermission)
+	controller.Fiber.Get("/:id", middleware.CheckPermission(controller.Enforcer, pagePermission), controller.getListPermission())
+	controller.Fiber.Post("/:id", middleware.CheckPermission(controller.Enforcer, pagePermission), controller.updatePermission())
 }
 
+// List Permission
+// @Summary List Permission
+// @Description List Permission by role
+// @Tags Permission
+// @Accept application/json
+// @Produce json
+// @Success 200 {object} map[string]interface{}
+// @Router /permission/:id [get]
 func (controller PermissionController) getListPermission() fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		controller.Logger.LogAccess("%s %s %s\n", c.IP(), c.Method(), c.OriginalURL())
@@ -80,6 +89,15 @@ func (controller PermissionController) getListPermission() fiber.Handler {
 	}
 }
 
+// Update Permission
+// @Summary Update Permission
+// @Description Update Permission by role
+// @Tags Permission
+// @Accept application/json
+// @Param permission body rules.PermissionUpdate true "Permission"
+// @Produce json
+// @Success 200 {object} map[string]interface{}
+// @Router /permission/:id [post]
 func (controller PermissionController) updatePermission() fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		controller.Logger.LogAccess("%s %s %s\n", c.IP(), c.Method(), c.OriginalURL())
