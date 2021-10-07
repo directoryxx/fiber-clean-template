@@ -51,6 +51,22 @@ definitions:
 info:
   contact: {}
 paths:
+  /current:
+    get:
+      consumes:
+      - application/json
+      description: Current User
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Current User
+      tags:
+      - Authentication
   /login:
     post:
       consumes:
@@ -79,6 +95,12 @@ paths:
       consumes:
       - application/json
       description: List Permission by role
+      parameters:
+      - description: With the bearer started
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:

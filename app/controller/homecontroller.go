@@ -35,6 +35,15 @@ func (controller HomeController) HomeRouter() {
 	controller.Fiber.Get("/current", controller.current())
 }
 
+// Current User
+// @Summary Current User
+// @Description Current User
+// @Tags Authentication
+// @Param Authorization header string true "With the bearer started"
+// @Accept application/json
+// @Produce json
+// @Success 200 {object} map[string]interface{}
+// @Router /current [get]
 func (controller HomeController) current() fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		auth := session.GetAuth()
