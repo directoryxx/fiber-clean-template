@@ -20,11 +20,19 @@ RUN chmod +x /tmp/install.sh
 
 RUN bash /tmp/install.sh
 
-RUN go install github.com/directoryxx/fiber-clean-template/cmd
+RUN useradd -ms /bin/bash golang
+
+COPY ./go.mod /app/go.mod
+COPY ./go.sum /app/go.sum
+COPY ./cmd /app/cmd
+#RUN go install github.com/directoryxx/fiber-clean-template/cmd
 
 # RUN go get github.com/oxequa/realize
 WORKDIR /app
 
+RUN go mod download
+RUN cd /app/cmd && go install github.com/directoryxx/fiber-clean-template/cmd
 
+USER golang
 
 CMD ["air"]
