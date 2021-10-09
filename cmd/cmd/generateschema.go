@@ -18,12 +18,10 @@ package cmd
 import (
 	"fmt"
 	"os/exec"
-	"unicode"
+	"strings"
 
 	"github.com/spf13/cobra"
 )
-
-var hasUpper bool
 
 // generateschemaCmd represents the generateschema command
 var generateschemaCmd = &cobra.Command{
@@ -60,20 +58,7 @@ func generateSchema(args []string, cmd *cobra.Command) {
 		panic(err)
 	}
 
-	hasUpper = false
-	for _, r := range str {
-		if unicode.IsUpper(r) {
-			hasUpper = true
-			break
-		}
-	}
-
-	if !hasUpper {
-		fmt.Println("String must capitalize")
-		return
-	}
-
-	cmdExec := exec.Command("ent", "init", "--target", "app/schema", str)
+	cmdExec := exec.Command("ent", "init", "--target", "app/schema", strings.Title(str))
 	cmdExec.Dir = "/app"
 	out, err := cmdExec.Output()
 	if err != nil {

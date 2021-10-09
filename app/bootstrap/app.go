@@ -23,7 +23,6 @@ func Dispatch(ctx context.Context, log interfaces.Logger, enforcer *casbin.Enfor
 	})
 
 	// app.Use(pprof.New())
-
 	routes.RegisterRoute(app, ctx, log, enforcer)
 
 	go func() {

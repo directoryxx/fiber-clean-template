@@ -1,0 +1,75 @@
+package repository
+
+import (
+	"context"
+
+	"github.com/directoryxx/fiber-clean-template/app/infrastructure"
+	"github.com/directoryxx/fiber-clean-template/app/rules"
+	"github.com/directoryxx/fiber-clean-template/database/gen"
+	"github.com/directoryxx/fiber-clean-template/database/gen/{Ubah}"
+)
+
+type {Ubah}Repository struct {
+	// SQLHandler *gen.Client
+	Ctx context.Context
+}
+
+func (rr *{Ubah}Repository) Insert({Ubah} *rules.{Ubah}Validation) ({Ubah1} *gen.{Ubah}, err error) {
+	conn, err := infrastructure.Open()
+	if err != nil {
+		panic(err)
+	}
+	create, err := conn.{Ubah}.Create().SetName({Ubah}.Name).Save(rr.Ctx)
+	defer conn.Close()
+	return create, err
+}
+
+func (rr *{Ubah}Repository) GetAll() ({Ubah1} []*gen.{Ubah}, err error) {
+	conn, err := infrastructure.Open()
+	if err != nil {
+		panic(err)
+	}
+	{Ubah1}, err = conn.{Ubah}.Query().All(rr.Ctx)
+	defer conn.Close()
+	return {Ubah1}, err
+}
+
+func (rr *{Ubah}Repository) Update({Ubah}_id int, {Ubah} *rules.{Ubah}Validation) ({Ubah1} *gen.{Ubah}, err error) {
+	conn, err := infrastructure.Open()
+	if err != nil {
+		panic(err)
+	}
+	{Ubah}Update, errUpdate := conn.{Ubah}.UpdateOneID({Ubah}_id).SetName({Ubah}.Name).Save(rr.Ctx)
+	defer conn.Close()
+	return {Ubah}Update, errUpdate
+}
+
+func (rr *{Ubah}Repository) Delete({Ubah}_id int) (err error) {
+	conn, err := infrastructure.Open()
+	if err != nil {
+		panic(err)
+	}
+	err = conn.{Ubah}.DeleteOneID({Ubah}_id).Exec(rr.Ctx)
+	defer conn.Close()
+	return err
+}
+
+func (rr *{Ubah}Repository) CountByName(input string) (res int64) {
+	conn, err := infrastructure.Open()
+	if err != nil {
+		panic(err)
+	}
+	check, _ := conn.{Ubah}.Query().Where({Ubah1}.Name(input)).Count(rr.Ctx)
+	defer conn.Close()
+	return int64(check)
+}
+
+func (rr *{Ubah}Repository) FindById({Ubah}_id int) ({Ubah}Data *gen.{Ubah}, err error) {
+	conn, err := infrastructure.Open()
+	if err != nil {
+		panic(err)
+	}
+	{Ubah}Data, err{Ubah}Data := conn.{Ubah}.Query().Where({Ubah1}.ID({Ubah}_id)).Only(rr.Ctx)
+	defer conn.Close()
+	return {Ubah}Data, err{Ubah}Data
+}
