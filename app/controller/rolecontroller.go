@@ -41,11 +41,11 @@ func NewRoleController(logger interfaces.Logger, fiber *fiber.App, enforcer *cas
 
 func (controller RoleController) RoleRouter() {
 	// controller.Fiber.Group(pageRole)
-	controller.Fiber.Get("/role", middleware.CheckPermission(controller.Enforcer, pageRole), controller.getAll())
-	controller.Fiber.Post("/role", middleware.CheckPermission(controller.Enforcer, pageRole), controller.createRole())
-	controller.Fiber.Get("/role/:id", middleware.CheckPermission(controller.Enforcer, pageRole), controller.getRole())
-	controller.Fiber.Put("/role/:id", middleware.CheckPermission(controller.Enforcer, pageRole), controller.updateRole())
-	controller.Fiber.Delete("/role/:id", middleware.CheckPermission(controller.Enforcer, pageRole), controller.deleteRole())
+	controller.Fiber.Get("/role", middleware.CheckPermission(controller.Enforcer, pageRole), controller.getAll)
+	controller.Fiber.Post("/role", middleware.CheckPermission(controller.Enforcer, pageRole), controller.createRole)
+	controller.Fiber.Get("/role/:id", middleware.CheckPermission(controller.Enforcer, pageRole), controller.getRole)
+	controller.Fiber.Put("/role/:id", middleware.CheckPermission(controller.Enforcer, pageRole), controller.updateRole)
+	controller.Fiber.Delete("/role/:id", middleware.CheckPermission(controller.Enforcer, pageRole), controller.deleteRole)
 }
 
 // List Role
@@ -57,29 +57,28 @@ func (controller RoleController) RoleRouter() {
 // @Produce json
 // @Success 200 {object} map[string]interface{}
 // @Router /role [get]
-func (controller RoleController) getAll() fiber.Handler {
-	return func(c *fiber.Ctx) error {
-		controller.Logger.LogAccess("%s %s %s\n", c.IP(), c.Method(), c.OriginalURL())
+func (controller RoleController) getAll(c *fiber.Ctx) error {
+	controller.Logger.LogAccess("%s %s %s\n", c.IP(), c.Method(), c.OriginalURL())
 
-		dataRole := controller.Roleservice.GetAll()
+	dataRole := controller.Roleservice.GetAll()
 
-		// token, err := jwt.ExtractTokenMetadata(c)
-		// if err != nil {
-		// 	controller.Logger.LogError("%s", err)
-		// }
+	// token, err := jwt.ExtractTokenMetadata(c)
+	// if err != nil {
+	// 	controller.Logger.LogError("%s", err)
+	// }
 
-		// // res, errGet := controller.Userservice.CurrentUser(token.UserId)
+	// // res, errGet := controller.Userservice.CurrentUser(token.UserId)
 
-		// if errGet != nil {
-		// 	controller.Logger.LogError("%s", errGet)
-		// }
+	// if errGet != nil {
+	// 	controller.Logger.LogError("%s", errGet)
+	// }
 
-		return c.JSON(&response.SuccessResponse{
-			Success: true,
-			Data:    dataRole,
-			Message: "Role berhasil ditampilkan",
-		})
-	}
+	return c.JSON(&response.SuccessResponse{
+		Success: true,
+		Data:    dataRole,
+		Message: "Role berhasil ditampilkan",
+	})
+
 }
 
 // Create Role
@@ -92,51 +91,49 @@ func (controller RoleController) getAll() fiber.Handler {
 // @Produce json
 // @Success 200 {object} map[string]interface{}
 // @Router /role [post]
-func (controller RoleController) createRole() fiber.Handler {
-	return func(c *fiber.Ctx) error {
-		controller.Logger.LogAccess("%s %s %s\n", c.IP(), c.Method(), c.OriginalURL())
+func (controller RoleController) createRole(c *fiber.Ctx) error {
+	controller.Logger.LogAccess("%s %s %s\n", c.IP(), c.Method(), c.OriginalURL())
 
-		var role *rules.RoleValidation
-		errRequest := c.BodyParser(&role)
+	var role *rules.RoleValidation
+	errRequest := c.BodyParser(&role)
 
-		if errRequest != nil {
-			controller.Logger.LogError("%s", errRequest)
-			c.Status(422)
-			return c.JSON(&response.ErrorResponse{
-				Success: false,
-				Message: errRequest,
-			})
-		}
-
-		initval = validator.New()
-		roleValidation(initval, controller.Roleservice)
-		errVal := initval.Struct(role)
-
-		if errVal != nil {
-			message := make(map[string]string)
-			message["name"] = "Role telah terdaftar"
-			errorResponse := validation.ValidateRequest(errVal, message)
-			return c.JSON(errorResponse)
-		}
-
-		dataRole, errCreate := controller.Roleservice.CreateRole(role)
-
-		if errCreate != nil {
-			controller.Logger.LogError("%s", errCreate)
-			c.Status(422)
-			return c.JSON(&response.ErrorResponse{
-				Success: false,
-				Message: errCreate,
-			})
-		}
-
-		return c.JSON(response.SuccessResponse{
-			Success: true,
-			Data:    dataRole,
-			Message: "Role berhasil dibuat",
+	if errRequest != nil {
+		controller.Logger.LogError("%s", errRequest)
+		c.Status(422)
+		return c.JSON(&response.ErrorResponse{
+			Success: false,
+			Message: errRequest,
 		})
-
 	}
+
+	initval = validator.New()
+	roleValidation(initval, controller.Roleservice)
+	errVal := initval.Struct(role)
+
+	if errVal != nil {
+		message := make(map[string]string)
+		message["name"] = "Role telah terdaftar"
+		errorResponse := validation.ValidateRequest(errVal, message)
+		return c.JSON(errorResponse)
+	}
+
+	dataRole, errCreate := controller.Roleservice.CreateRole(role)
+
+	if errCreate != nil {
+		controller.Logger.LogError("%s", errCreate)
+		c.Status(422)
+		return c.JSON(&response.ErrorResponse{
+			Success: false,
+			Message: errCreate,
+		})
+	}
+
+	return c.JSON(response.SuccessResponse{
+		Success: true,
+		Data:    dataRole,
+		Message: "Role berhasil dibuat",
+	})
+
 }
 
 // Update Role
@@ -148,74 +145,72 @@ func (controller RoleController) createRole() fiber.Handler {
 // @Produce json
 // @Success 200 {object} map[string]interface{}
 // @Router /role/:id [put]
-func (controller RoleController) updateRole() fiber.Handler {
-	return func(c *fiber.Ctx) error {
-		controller.Logger.LogAccess("%s %s %s\n", c.IP(), c.Method(), c.OriginalURL())
+func (controller RoleController) updateRole(c *fiber.Ctx) error {
+	controller.Logger.LogAccess("%s %s %s\n", c.IP(), c.Method(), c.OriginalURL())
 
-		var role *rules.RoleValidation
-		errRequest := c.BodyParser(&role)
+	var role *rules.RoleValidation
+	errRequest := c.BodyParser(&role)
 
-		id, err := c.ParamsInt("id")
+	id, err := c.ParamsInt("id")
 
-		data := controller.Roleservice.GetById(id)
+	data := controller.Roleservice.GetById(id)
 
-		if data == nil {
-			c.Status(404)
-			return c.JSON(&response.ErrorResponse{
-				Success: false,
-				Message: "Data tidak ditemukan",
-			})
-		}
-
-		if err != nil {
-			c.Status(422)
-			return c.JSON(&response.ErrorResponse{
-				Success: false,
-				Message: "Silahkan periksa kembali",
-			})
-		}
-
-		if errRequest != nil {
-			controller.Logger.LogError("%s", errRequest)
-			c.Status(422)
-			return c.JSON(&response.ErrorResponse{
-				Success: false,
-				Message: errRequest,
-			})
-		}
-
-		initval = validator.New()
-		roleValidation(initval, controller.Roleservice)
-		errVal := initval.Struct(role)
-
-		if errVal != nil {
-			message := make(map[string]string)
-			message["name"] = "Role telah terdaftar"
-			errorResponse := validation.ValidateRequest(errVal, message)
-			return c.JSON(&response.ErrorResponse{
-				Success: false,
-				Message: errorResponse,
-			})
-		}
-
-		dataRole, errCreate := controller.Roleservice.UpdateRole(id, role)
-
-		if errCreate != nil {
-			controller.Logger.LogError("%s", errCreate)
-			c.Status(422)
-			return c.JSON(&response.ErrorResponse{
-				Success: false,
-				Message: errCreate,
-			})
-		}
-
-		return c.JSON(response.SuccessResponse{
-			Success: true,
-			Data:    dataRole,
-			Message: "Role berhasil diubah",
+	if data == nil {
+		c.Status(404)
+		return c.JSON(&response.ErrorResponse{
+			Success: false,
+			Message: "Data tidak ditemukan",
 		})
-
 	}
+
+	if err != nil {
+		c.Status(422)
+		return c.JSON(&response.ErrorResponse{
+			Success: false,
+			Message: "Silahkan periksa kembali",
+		})
+	}
+
+	if errRequest != nil {
+		controller.Logger.LogError("%s", errRequest)
+		c.Status(422)
+		return c.JSON(&response.ErrorResponse{
+			Success: false,
+			Message: errRequest,
+		})
+	}
+
+	initval = validator.New()
+	roleValidation(initval, controller.Roleservice)
+	errVal := initval.Struct(role)
+
+	if errVal != nil {
+		message := make(map[string]string)
+		message["name"] = "Role telah terdaftar"
+		errorResponse := validation.ValidateRequest(errVal, message)
+		return c.JSON(&response.ErrorResponse{
+			Success: false,
+			Message: errorResponse,
+		})
+	}
+
+	dataRole, errCreate := controller.Roleservice.UpdateRole(id, role)
+
+	if errCreate != nil {
+		controller.Logger.LogError("%s", errCreate)
+		c.Status(422)
+		return c.JSON(&response.ErrorResponse{
+			Success: false,
+			Message: errCreate,
+		})
+	}
+
+	return c.JSON(response.SuccessResponse{
+		Success: true,
+		Data:    dataRole,
+		Message: "Role berhasil diubah",
+	})
+
 }
 
 // Get Role
@@ -226,37 +221,34 @@ func (controller RoleController) updateRole() fiber.Handler {
 // @Produce json
 // @Success 200 {object} map[string]interface{}
 // @Router /role/:id [get]
-func (controller RoleController) getRole() fiber.Handler {
-	return func(c *fiber.Ctx) error {
-		controller.Logger.LogAccess("%s %s %s\n", c.IP(), c.Method(), c.OriginalURL())
+func (controller RoleController) getRole(c *fiber.Ctx) error {
+	controller.Logger.LogAccess("%s %s %s\n", c.IP(), c.Method(), c.OriginalURL())
 
-		id, err := c.ParamsInt("id")
+	id, err := c.ParamsInt("id")
 
-		if err != nil {
-			c.Status(422)
-			return c.JSON(&response.ErrorResponse{
-				Success: false,
-				Message: "Silahkan periksa kembali",
-			})
-		}
-
-		roleData := controller.Roleservice.GetById(id)
-
-		if roleData.ID == 0 {
-			c.Status(404)
-			return c.JSON(&response.ErrorResponse{
-				Success: false,
-				Message: "Data tidak ditemukan",
-			})
-		}
-
-		return c.JSON(response.SuccessResponse{
-			Success: true,
-			Data:    roleData,
-			Message: "Role berhasil diambil",
+	if err != nil {
+		c.Status(422)
+		return c.JSON(&response.ErrorResponse{
+			Success: false,
+			Message: "Silahkan periksa kembali",
 		})
-
 	}
+
+	roleData := controller.Roleservice.GetById(id)
+
+	if roleData.ID == 0 {
+		c.Status(404)
+		return c.JSON(&response.ErrorResponse{
+			Success: false,
+			Message: "Data tidak ditemukan",
+		})
+	}
+
+	return c.JSON(response.SuccessResponse{
+		Success: true,
+		Data:    roleData,
+		Message: "Role berhasil diambil",
+	})
 }
 
 // Delete Role
@@ -267,37 +259,35 @@ func (controller RoleController) getRole() fiber.Handler {
 // @Produce json
 // @Success 200 {object} map[string]interface{}
 // @Router /role/:id [delete]
-func (controller RoleController) deleteRole() fiber.Handler {
-	return func(c *fiber.Ctx) error {
-		controller.Logger.LogAccess("%s %s %s\n", c.IP(), c.Method(), c.OriginalURL())
+func (controller RoleController) deleteRole(c *fiber.Ctx) error {
+	controller.Logger.LogAccess("%s %s %s\n", c.IP(), c.Method(), c.OriginalURL())
 
-		id, err := c.ParamsInt("id")
+	id, err := c.ParamsInt("id")
 
-		if err != nil {
-			c.Status(422)
-			return c.JSON(&response.ErrorResponse{
-				Success: false,
-				Message: "Silahkan periksa kembali",
-			})
-		}
-
-		deleteRole := controller.Roleservice.DeleteRole(id)
-
-		if deleteRole != nil {
-			c.Status(422)
-			return c.JSON(&response.ErrorResponse{
-				Success: false,
-				Message: "Data gagal dihapus",
-			})
-		}
-
-		return c.JSON(response.SuccessResponse{
-			Success: true,
-			// Data:    roleData,
-			Message: "Role berhasil dihappus",
+	if err != nil {
+		c.Status(422)
+		return c.JSON(&response.ErrorResponse{
+			Success: false,
+			Message: "Silahkan periksa kembali",
 		})
-
 	}
+
+	deleteRole := controller.Roleservice.DeleteRole(id)
+
+	if deleteRole != nil {
+		c.Status(422)
+		return c.JSON(&response.ErrorResponse{
+			Success: false,
+			Message: "Data gagal dihapus",
+		})
+	}
+
+	return c.JSON(response.SuccessResponse{
+		Success: true,
+		// Data:    roleData,
+		Message: "Role berhasil dihappus",
+	})
+
 }
 
 func roleValidation(initval *validator.Validate, service service.RoleService) {

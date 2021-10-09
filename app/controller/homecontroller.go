@@ -32,7 +32,7 @@ func NewHomeController(logger interfaces.Logger, fiber *fiber.App) *HomeControll
 }
 
 func (controller HomeController) HomeRouter() {
-	controller.Fiber.Get("/current", controller.current())
+	controller.Fiber.Get("/current", controller.current)
 }
 
 // Current User
@@ -44,25 +44,24 @@ func (controller HomeController) HomeRouter() {
 // @Produce json
 // @Success 200 {object} map[string]interface{}
 // @Router /current [get]
-func (controller HomeController) current() fiber.Handler {
-	return func(c *fiber.Ctx) error {
-		auth := session.GetAuth()
-		controller.Logger.LogAccess("%s %s %s\n", c.IP(), c.Method(), c.OriginalURL())
+func (controller HomeController) current(c *fiber.Ctx) error {
+	auth := session.GetAuth()
+	controller.Logger.LogAccess("%s %s %s\n", c.IP(), c.Method(), c.OriginalURL())
 
-		// token, err := jwt.ExtractTokenMetadata(c)
-		// if err != nil {
-		// 	controller.Logger.LogError("%s", err)
-		// }
+	// token, err := jwt.ExtractTokenMetadata(c)
+	// if err != nil {
+	// 	controller.Logger.LogError("%s", err)
+	// }
 
-		// res, errGet := controller.Userservice.CurrentUser(token.UserId)
+	// res, errGet := controller.Userservice.CurrentUser(token.UserId)
 
-		// if errGet != nil {
-		// 	controller.Logger.LogError("%s", errGet)
-		// }
+	// if errGet != nil {
+	// 	controller.Logger.LogError("%s", errGet)
+	// }
 
-		return c.JSON(&response.CurrentResponse{
-			Name:     auth.Auth.Name,
-			Username: auth.Auth.Username,
-		})
-	}
+	return c.JSON(&response.CurrentResponse{
+		Name:     auth.Auth.Name,
+		Username: auth.Auth.Username,
+	})
+
 }
