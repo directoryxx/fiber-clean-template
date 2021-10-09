@@ -40,8 +40,8 @@ func NewPermissionController(logger interfaces.Logger, enforcer *casbin.Enforcer
 
 func (controller PermissionController) PermissionRouter() {
 	// controller.Fiber.Group(pagePermission)
-	controller.Fiber.Get("/permission/:id", middleware.CheckPermission(controller.Enforcer, pagePermission), controller.getListPermission())
-	controller.Fiber.Post("/permission/:id", middleware.CheckPermission(controller.Enforcer, pagePermission), controller.updatePermission())
+	controller.Fiber.Get("/permission/:id", middleware.CheckPermission(controller.Enforcer, pagePermission), controller.getListPermission)
+	controller.Fiber.Post("/permission/:id", middleware.CheckPermission(controller.Enforcer, pagePermission), controller.updatePermission)
 }
 
 // List Permission
@@ -53,38 +53,37 @@ func (controller PermissionController) PermissionRouter() {
 // @Produce json
 // @Success 200 {object} map[string]interface{}
 // @Router /permission/:id [get]
-func (controller PermissionController) getListPermission() fiber.Handler {
-	return func(c *fiber.Ctx) error {
-		controller.Logger.LogAccess("%s %s %s\n", c.IP(), c.Method(), c.OriginalURL())
+func (controller PermissionController) getListPermission(c *fiber.Ctx) error {
+	controller.Logger.LogAccess("%s %s %s\n", c.IP(), c.Method(), c.OriginalURL())
 
-		id, err := c.ParamsInt("id")
+	id, err := c.ParamsInt("id")
 
-		roleData := controller.RoleService.GetById(id)
+	roleData := controller.RoleService.GetById(id)
 
-		if roleData == nil {
-			c.Status(404)
-			return c.JSON(&response.ErrorResponse{
-				Success: false,
-				Message: "Data tidak ditemukan",
-			})
-		}
-
-		getPolicy := controller.Enforcer.GetFilteredPolicy(0, roleData.Name)
-
-		if err != nil {
-			c.Status(422)
-			return c.JSON(&response.ErrorResponse{
-				Success: false,
-				Message: "Silahkan periksa kembali",
-			})
-		}
-
-		return c.JSON(&response.SuccessResponse{
-			Success: true,
-			Message: "Berhasil mengambil data",
-			Data:    getPolicy,
+	if roleData == nil {
+		c.Status(404)
+		return c.JSON(&response.ErrorResponse{
+			Success: false,
+			Message: "Data tidak ditemukan",
 		})
 	}
+
+	getPolicy := controller.Enforcer.GetFilteredPolicy(0, roleData.Name)
+
+	if err != nil {
+		c.Status(422)
+		return c.JSON(&response.ErrorResponse{
+			Success: false,
+			Message: "Silahkan periksa kembali",
+		})
+	}
+
+	return c.JSON(&response.SuccessResponse{
+		Success: true,
+		Message: "Berhasil mengambil data",
+		Data:    getPolicy,
+	})
+
 }
 
 // Update Permission
@@ -97,64 +96,63 @@ func (controller PermissionController) getListPermission() fiber.Handler {
 // @Produce json
 // @Success 200 {object} map[string]interface{}
 // @Router /permission/:id [post]
-func (controller PermissionController) updatePermission() fiber.Handler {
-	return func(c *fiber.Ctx) error {
-		controller.Logger.LogAccess("%s %s %s\n", c.IP(), c.Method(), c.OriginalURL())
+func (controller PermissionController) updatePermission(c *fiber.Ctx) error {
+	controller.Logger.LogAccess("%s %s %s\n", c.IP(), c.Method(), c.OriginalURL())
 
-		var permission rules.PermissionUpdate
-		err := c.BodyParser(&permission)
+	var permission rules.PermissionUpdate
+	err := c.BodyParser(&permission)
 
-		if err != nil {
-			c.Status(422)
-			return c.JSON(&response.ErrorResponse{
-				Success: false,
-				Message: "Silahkan periksa kembali",
-			})
-		}
-
-		id, err := c.ParamsInt("id")
-
-		roleData := controller.RoleService.GetById(id)
-
-		if roleData == nil {
-			c.Status(404)
-			return c.JSON(&response.ErrorResponse{
-				Success: false,
-				Message: "Data tidak ditemukan",
-			})
-		}
-
-		initval = validator.New()
-		roleValidation(initval, *controller.RoleService)
-		errVal := initval.Struct(permission)
-
-		if errVal != nil {
-			message := make(map[string]string)
-			message["permission"] = "Pastikan kembali data yang dikirim"
-			errorResponse := validation.ValidateRequest(errVal, message)
-			return c.JSON(errorResponse)
-		}
-
-		controller.Enforcer.RemoveFilteredPolicy(0, roleData.Name)
-
-		for _, s := range permission.Permission {
-			controller.Enforcer.AddPolicy(roleData.Name, s.Page, s.Resource)
-		}
-
-		getPolicy := controller.Enforcer.GetFilteredPolicy(0, roleData.Name)
-
-		if err != nil {
-			c.Status(422)
-			return c.JSON(&response.ErrorResponse{
-				Success: false,
-				Message: "Silahkan periksa kembali",
-			})
-		}
-
-		return c.JSON(&response.SuccessResponse{
-			Success: true,
-			Message: "Berhasil mengambil data",
-			Data:    getPolicy,
+	if err != nil {
+		c.Status(422)
+		return c.JSON(&response.ErrorResponse{
+			Success: false,
+			Message: "Silahkan periksa kembali",
 		})
 	}
+
+	id, err := c.ParamsInt("id")
+
+	roleData := controller.RoleService.GetById(id)
+
+	if roleData == nil {
+		c.Status(404)
+		return c.JSON(&response.ErrorResponse{
+			Success: false,
+			Message: "Data tidak ditemukan",
+		})
+	}
+
+	initval = validator.New()
+	roleValidation(initval, *controller.RoleService)
+	errVal := initval.Struct(permission)
+
+	if errVal != nil {
+		message := make(map[string]string)
+		message["permission"] = "Pastikan kembali data yang dikirim"
+		errorResponse := validation.ValidateRequest(errVal, message)
+		return c.JSON(errorResponse)
+	}
+
+	controller.Enforcer.RemoveFilteredPolicy(0, roleData.Name)
+
+	for _, s := range permission.Permission {
+		controller.Enforcer.AddPolicy(roleData.Name, s.Page, s.Resource)
+	}
+
+	getPolicy := controller.Enforcer.GetFilteredPolicy(0, roleData.Name)
+
+	if err != nil {
+		c.Status(422)
+		return c.JSON(&response.ErrorResponse{
+			Success: false,
+			Message: "Silahkan periksa kembali",
+		})
+	}
+
+	return c.JSON(&response.SuccessResponse{
+		Success: true,
+		Message: "Berhasil mengambil data",
+		Data:    getPolicy,
+	})
+
 }

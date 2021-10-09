@@ -41,8 +41,8 @@ func RegisterRoute(app *fiber.App, ctx context.Context, log interfaces.Logger, e
 
 	app.Get("/dashboard", monitor.New())
 
-	app.Post("/register", UserController.Register())
-	app.Post("/login", UserController.Login())
+	app.Post("/register", UserController.Register)
+	app.Post("/login", UserController.Login)
 
 	app.Use(middleware.JWTProtected(service.UserService{
 		UserRepository: repository.UserRepository{
