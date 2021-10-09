@@ -3,8 +3,8 @@ services:
   golang:
     container_name: "golang"
     build:
-      context: ./docker/go
-      dockerfile: Dockerfile.dev
+      context: .
+      dockerfile: ./docker/go/Dockerfile.dev
     restart: always
     volumes:
       - ./:/app

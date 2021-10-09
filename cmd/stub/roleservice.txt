@@ -1,0 +1,47 @@
+package service
+
+import (
+	"github.com/directoryxx/fiber-clean-template/app/repository"
+	"github.com/directoryxx/fiber-clean-template/app/rules"
+	"github.com/directoryxx/fiber-clean-template/database/gen"
+)
+
+type {Ubah}Service struct {
+	{Ubah}Repository repository.{Ubah}Repository
+}
+
+func (rs {Ubah}Service) GetAll() ({Ubah}s []*gen.{Ubah}) {
+	{Ubah}Data, _ := rs.{Ubah}Repository.GetAll()
+
+	return {Ubah}Data
+}
+
+func (rs {Ubah}Service) Create{Ubah}({Ubah} *rules.{Ubah}Validation) (user *gen.{Ubah}, err error) {
+	data, err := rs.{Ubah}Repository.Insert({Ubah})
+
+	return data, err
+}
+
+func (rs {Ubah}Service) Update{Ubah}({Ubah}_id int, {Ubah} *rules.{Ubah}Validation) (user *gen.{Ubah}, err error) {
+	data, err := rs.{Ubah}Repository.Update({Ubah}_id, {Ubah})
+
+	return data, err
+}
+
+func (rs {Ubah}Service) CheckDuplicateName{Ubah}(name string) int64 {
+	data := rs.{Ubah}Repository.CountByName(name)
+
+	return data
+}
+
+func (rs {Ubah}Service) GetById({Ubah}_id int) (user *gen.{Ubah}) {
+	{Ubah}Data, _ := rs.{Ubah}Repository.FindById({Ubah}_id)
+
+	return {Ubah}Data
+}
+
+func (rs {Ubah}Service) Delete{Ubah}({Ubah}_id int) error {
+	delete{Ubah} := rs.{Ubah}Repository.Delete({Ubah}_id)
+
+	return delete{Ubah}
+}
