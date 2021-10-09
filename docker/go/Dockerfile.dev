@@ -20,6 +20,21 @@ RUN chmod +x /tmp/install.sh
 
 RUN bash /tmp/install.sh
 
+# Install VSCode Golang Extension 
+RUN go get -v github.com/uudashr/gopkgs/v2/cmd/gopkgs
+RUN go get -v github.com/ramya-rao-a/go-outline
+RUN go get -v github.com/cweill/gotests/gotests
+RUN go get -v github.com/fatih/gomodifytags
+RUN go get -v github.com/josharian/impl
+RUN go get -v github.com/haya14busa/goplay/cmd/goplay
+RUN go get -v github.com/go-delve/delve/cmd/dlv
+RUN go get -v -d github.com/go-delve/delve/cmd/dlv@master
+RUN go get -v honnef.co/go/tools/cmd/staticcheck
+RUN go get -v golang.org/x/tools/gopls
+
+# Install packages
+RUN go get entgo.io/ent/cmd/ent
+
 RUN useradd -ms /bin/bash golang
 
 COPY ./go.mod /app/go.mod
