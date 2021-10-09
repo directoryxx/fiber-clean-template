@@ -16,23 +16,19 @@ limitations under the License.
 package cmd
 
 import (
-	"errors"
 	"fmt"
 	"os/exec"
+	"unicode"
 
 	"github.com/spf13/cobra"
 )
+
+var hasUpper bool
 
 // generateschemaCmd represents the generateschema command
 var generateschemaCmd = &cobra.Command{
 	Use:   "generateschema",
 	Short: "A brief description of your command",
-	Args: func(cmd *cobra.Command, args []string) error {
-		if len(args) < 1 {
-			return errors.New("requires a name argument")
-		}
-		return fmt.Errorf("invalid name specified: %s", args[0])
-	},
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
 
@@ -62,6 +58,19 @@ func generateSchema(args []string, cmd *cobra.Command) {
 	str, err := cmd.Flags().GetString("name")
 	if err != nil {
 		panic(err)
+	}
+
+	hasUpper = false
+	for _, r := range str {
+		if unicode.IsUpper(r) {
+			hasUpper = true
+			break
+		}
+	}
+
+	if !hasUpper {
+		fmt.Println("String must capitalize")
+		return
 	}
 
 	cmdExec := exec.Command("ent", "init", "--target", "app/schema", str)
