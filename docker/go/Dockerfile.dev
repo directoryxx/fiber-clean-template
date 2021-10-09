@@ -34,6 +34,7 @@ RUN go get -v golang.org/x/tools/gopls
 
 # Install packages
 RUN go get entgo.io/ent/cmd/ent
+RUN go get -u github.com/spf13/cobra/cobra
 
 RUN useradd -ms /bin/bash golang
 
