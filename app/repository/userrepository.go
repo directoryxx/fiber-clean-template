@@ -5,10 +5,8 @@ import (
 
 	"time"
 
+	"github.com/directoryxx/fiber-clean-template/app/domain"
 	"github.com/directoryxx/fiber-clean-template/app/infrastructure"
-	"github.com/directoryxx/fiber-clean-template/app/rules"
-	"github.com/directoryxx/fiber-clean-template/database/gen"
-	"github.com/directoryxx/fiber-clean-template/database/gen/user"
 )
 
 type UserRepository struct {
@@ -16,55 +14,61 @@ type UserRepository struct {
 	Ctx context.Context
 }
 
-func (ur *UserRepository) Insert(User *rules.RegisterValidation) (user *gen.User, err error) {
+func (ur *UserRepository) Insert(User *domain.User) (user *domain.User) {
 	conn, err := infrastructure.Open()
 	if err != nil {
 		panic(err)
 	}
-	create, err := conn.User.Create().SetName(User.Name).SetUsername(User.Username).SetPassword(User.Password).SetRoleID(4).Save(ur.Ctx)
-	defer conn.Close()
-	return create, err
+
+	conn.Create(User)
+	// defer conn.Close()
+	return User
 }
 
 func (ur *UserRepository) CountByUsername(input string) (res int64) {
+	var count int64
 	conn, err := infrastructure.Open()
 	if err != nil {
 		panic(err)
 	}
-	check, _ := conn.User.Query().Where(user.Username(input)).Count(ur.Ctx)
-	defer conn.Close()
-	return int64(check)
+
+	conn.Model(&domain.User{}).Where("username = ?", input).Count(&count)
+	// defer conn.Close()
+	return count
 }
 
-func (ur *UserRepository) FindByUsername(input string) (res *gen.User, err error) {
+func (ur *UserRepository) FindByUsername(input string) (res *domain.User) {
+	var user *domain.User
 	conn, err := infrastructure.Open()
 	if err != nil {
 		panic(err)
 	}
-	username, err := conn.User.Query().Where(user.Username(input)).Only(ur.Ctx)
-	defer conn.Close()
-	return username, err
+
+	conn.Model(&domain.User{}).Where("username = ?", input).First(&user)
+
+	return user
 }
 
-func (ur *UserRepository) FindById(input uint64) (res *gen.User, err error) {
+func (ur *UserRepository) FindById(input uint64) (res *[]domain.User) {
+	var user *[]domain.User
 	conn, err := infrastructure.Open()
 	if err != nil {
 		panic(err)
 	}
-	user, err := conn.User.Query().Where(user.ID(int(input))).Only(ur.Ctx)
-	defer conn.Close()
-	return user, err
+	conn.Model(&user).Where("id = ?", input).Find(&user)
+	// defer conn.Close()
+	return user
 }
 
-func (ur *UserRepository) FindByIdWithRelation(input uint64) (res *gen.User, role *gen.Role, err error) {
+func (ur *UserRepository) FindByIdWithRelation(input uint64) (res *domain.User) {
+	var user *domain.User
 	conn, err := infrastructure.Open()
 	if err != nil {
 		panic(err)
 	}
-	userData, err := conn.User.Query().Where(user.ID(int(input))).Only(ur.Ctx)
-	role, err = conn.User.Query().Where(user.ID(int(input))).QueryRole().Only(ur.Ctx)
-	defer conn.Close()
-	return userData, role, err
+	conn.Model(&user).Where("id = ?", input).Preload("Role").First(&user)
+
+	return user
 }
 
 func (ur *UserRepository) InsertRedis(key string, value interface{}, expires time.Duration) error {

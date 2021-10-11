@@ -14,7 +14,7 @@ func main() {
 
 	infrastructure.Load(logger)
 
-	_, enforcer, err := infrastructure.NewSQLHandler(ctx)
+	enforcer, err := infrastructure.NewSQLHandler(ctx)
 	if err != nil {
 		logger.LogError("%s", err)
 	}

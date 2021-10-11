@@ -1,8 +1,8 @@
 package session
 
 import (
+	"github.com/directoryxx/fiber-clean-template/app/domain"
 	"github.com/directoryxx/fiber-clean-template/app/service"
-	"github.com/directoryxx/fiber-clean-template/database/gen"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/session"
 )
@@ -12,8 +12,8 @@ var sessionGet *session.Session
 var dataAuth *SessionData
 
 type SessionData struct {
-	Auth *gen.User
-	Role *gen.Role
+	Auth *domain.User
+	Role *domain.Role
 }
 
 func InitSession(c *fiber.Ctx, user *service.UserService, user_id int) {
@@ -23,11 +23,11 @@ func InitSession(c *fiber.Ctx, user *service.UserService, user_id int) {
 		panic(err)
 	}
 
-	auth, role, _ := user.CurrentUser(uint64(user_id))
+	auth := user.CurrentUser(uint64(user_id))
 
 	dataAuth = &SessionData{
 		Auth: auth,
-		Role: role,
+		Role: &auth.Role,
 	}
 
 	sess.Set("user_id", user_id)

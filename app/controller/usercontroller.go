@@ -3,6 +3,7 @@ package controller
 import (
 	"context"
 
+	"github.com/directoryxx/fiber-clean-template/app/domain"
 	"github.com/directoryxx/fiber-clean-template/app/interfaces"
 	"github.com/directoryxx/fiber-clean-template/app/repository"
 	"github.com/directoryxx/fiber-clean-template/app/rules"
@@ -47,7 +48,7 @@ func NewUserController(logger interfaces.Logger) *UserController {
 // @Router /register [post]
 func (controller UserController) Register(c *fiber.Ctx) error {
 	controller.Logger.LogAccess("%s %s %s\n", c.IP(), c.Method(), c.OriginalURL())
-	var register *rules.RegisterValidation
+	var register *domain.User
 
 	errRequest := c.BodyParser(&register)
 
@@ -76,12 +77,9 @@ func (controller UserController) Register(c *fiber.Ctx) error {
 	}
 
 	register.Password, _ = encrypt.CreateHash(register.Password, encrypt.DefaultParams)
+	register.RoleID = 1
 
-	data, err := controller.Userservice.CreateUser(register)
-
-	if err != nil {
-		controller.Logger.LogError("%s", err)
-	}
+	data := controller.Userservice.CreateUser(register)
 
 	token, errToken := jwt.CreateToken(uint(data.ID))
 
@@ -139,7 +137,7 @@ func (controller UserController) Login(c *fiber.Ctx) error {
 		return c.JSON(errorResponse)
 	}
 
-	res, _ := controller.Userservice.CheckUsername(login.Username)
+	res := controller.Userservice.CheckUsername(login.Username)
 
 	if res.ID == 0 {
 		c.Status(422)
