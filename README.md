@@ -4,7 +4,8 @@
 
 # Features
 1. Login & Register
-2. Acl with Casbin
+2. ACL with Casbin
+3. Swagger API Docs
 
 
 # ORM
