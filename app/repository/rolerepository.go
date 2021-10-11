@@ -28,7 +28,7 @@ func (rr *RoleRepository) GetAll() (role *[]domain.Role, err error) {
 	if err != nil {
 		panic(err)
 	}
-	conn.Model(&Role).Find(&Role)
+	conn.Model(&Role).Preload("User").Find(&Role)
 	// defer conn.Close()
 	return Role, err
 }
