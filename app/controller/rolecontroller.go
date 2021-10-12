@@ -60,7 +60,18 @@ func (controller RoleController) RoleRouter() {
 func (controller RoleController) getAll(c *fiber.Ctx) error {
 	controller.Logger.LogAccess("%s %s %s\n", c.IP(), c.Method(), c.OriginalURL())
 
-	dataRole := controller.Roleservice.GetAll()
+	page := c.Query("page")
+	limit := c.Query("limit")
+
+	dataRole, errDataRole := controller.Roleservice.GetAll(page, limit)
+
+	if errDataRole == 1 {
+		c.Status(422)
+		return c.JSON(response.ErrorResponse{
+			Success: false,
+			Message: "Pastikan parameter sudah benar",
+		})
+	}
 
 	// token, err := jwt.ExtractTokenMetadata(c)
 	// if err != nil {
