@@ -1,6 +1,8 @@
 package service
 
 import (
+	"strconv"
+
 	"github.com/directoryxx/fiber-clean-template/app/domain"
 	"github.com/directoryxx/fiber-clean-template/app/repository"
 )
@@ -9,10 +11,20 @@ type RoleService struct {
 	RoleRepository repository.RoleRepository
 }
 
-func (rs RoleService) GetAll() (roles *[]domain.Role) {
-	roleData, _ := rs.RoleRepository.GetAll()
+func (rs RoleService) GetAll(page string, limit string) (roles *[]domain.Role, err int) {
+	pageInt, errPage := strconv.Atoi(page)
 
-	return roleData
+	limitInt, errLimit := strconv.Atoi(limit)
+
+	if page != "" && limit != "" {
+		if errPage != nil || errLimit != nil {
+			return nil, 1
+		}
+	}
+
+	roleData, _ := rs.RoleRepository.GetAll(pageInt, limitInt)
+
+	return roleData, 0
 }
 
 func (rs RoleService) CreateRole(Role *domain.Role) (user *domain.Role, err error) {

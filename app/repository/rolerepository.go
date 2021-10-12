@@ -5,6 +5,7 @@ import (
 
 	"github.com/directoryxx/fiber-clean-template/app/domain"
 	"github.com/directoryxx/fiber-clean-template/app/infrastructure"
+	"github.com/directoryxx/fiber-clean-template/app/utils/pagination"
 )
 
 type RoleRepository struct {
@@ -18,17 +19,22 @@ func (rr *RoleRepository) Insert(Role *domain.Role) (role *domain.Role, err erro
 		panic(err)
 	}
 	conn.Create(&Role)
+
 	// defer conn.Close()
 	return Role, err
 }
 
-func (rr *RoleRepository) GetAll() (role *[]domain.Role, err error) {
+func (rr *RoleRepository) GetAll(page int, limit int) (role *[]domain.Role, err error) {
 	var Role *[]domain.Role
 	conn, err := infrastructure.Open()
 	if err != nil {
 		panic(err)
 	}
-	conn.Model(&Role).Preload("User").Find(&Role)
+	if page == 0 && limit == 0 {
+		conn.Model(&Role).Preload("User").Find(&Role)
+	} else {
+		conn.Model(&Role).Scopes(pagination.Paginate(page, limit)).Preload("User").Find(&Role)
+	}
 	// defer conn.Close()
 	return Role, err
 }
