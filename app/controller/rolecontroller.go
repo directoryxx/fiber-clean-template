@@ -4,10 +4,10 @@ import (
 	"context"
 
 	"github.com/casbin/casbin/v2"
+	"github.com/directoryxx/fiber-clean-template/app/domain"
 	"github.com/directoryxx/fiber-clean-template/app/interfaces"
 	"github.com/directoryxx/fiber-clean-template/app/middleware"
 	"github.com/directoryxx/fiber-clean-template/app/repository"
-	"github.com/directoryxx/fiber-clean-template/app/rules"
 	"github.com/directoryxx/fiber-clean-template/app/service"
 	"github.com/directoryxx/fiber-clean-template/app/utils/response"
 	"github.com/directoryxx/fiber-clean-template/app/utils/validation"
@@ -94,7 +94,7 @@ func (controller RoleController) getAll(c *fiber.Ctx) error {
 func (controller RoleController) createRole(c *fiber.Ctx) error {
 	controller.Logger.LogAccess("%s %s %s\n", c.IP(), c.Method(), c.OriginalURL())
 
-	var role *rules.RoleValidation
+	var role *domain.Role
 	errRequest := c.BodyParser(&role)
 
 	if errRequest != nil {
@@ -148,7 +148,7 @@ func (controller RoleController) createRole(c *fiber.Ctx) error {
 func (controller RoleController) updateRole(c *fiber.Ctx) error {
 	controller.Logger.LogAccess("%s %s %s\n", c.IP(), c.Method(), c.OriginalURL())
 
-	var role *rules.RoleValidation
+	var role *domain.Role
 	errRequest := c.BodyParser(&role)
 
 	id, err := c.ParamsInt("id")
