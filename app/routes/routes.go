@@ -21,6 +21,7 @@ func RegisterRoute(app *fiber.App, ctx context.Context, log interfaces.Logger, e
 	HomeController := controller.NewHomeController(log, app)
 	RoleController := controller.NewRoleController(log, app, enforcer)
 	PermissionController := controller.NewPermissionController(log, enforcer, app)
+	QueueController := controller.NewQueueController(log)
 
 	app.Get("/docs/*", swagger.New(
 		swagger.Config{
@@ -57,4 +58,5 @@ func RegisterRoute(app *fiber.App, ctx context.Context, log interfaces.Logger, e
 	RoleController.RoleRouter()
 	PermissionController.PermissionRouter()
 
+	app.Get("/test", QueueController.TestQueue)
 }

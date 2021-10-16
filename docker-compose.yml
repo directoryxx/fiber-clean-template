@@ -42,10 +42,26 @@ services:
     networks:
       - dev
 
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: 'rabbitmq'
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - rabbitdata:/var/lib/rabbitmq/
+      - rabbitlog:/var/log/rabbitmq
+    networks:
+      - dev
+
 volumes:
   mysql_db:
     driver: local
   redisserverdata:
+    driver: local
+  rabbitdata:
+    driver: local
+  rabbitlog:
     driver: local
 
 
