@@ -6,6 +6,7 @@
 1. Login & Register
 2. ACL with Casbin
 3. Swagger API Docs
+4. Example Import file (Queue)
 
 
 # ORM
