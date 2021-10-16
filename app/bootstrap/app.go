@@ -22,6 +22,8 @@ func Dispatch(ctx context.Context, log interfaces.Logger, enforcer *casbin.Enfor
 		IdleTimeout: idleTimeout,
 	})
 
+	app.Static("/storage/", "/app/public/")
+
 	// app.Use(pprof.New())
 	routes.RegisterRoute(app, ctx, log, enforcer)
 
