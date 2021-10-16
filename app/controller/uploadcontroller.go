@@ -2,6 +2,7 @@ package controller
 
 import (
 	"fmt"
+	"os"
 	"strings"
 
 	"github.com/casbin/casbin/v2"
@@ -43,6 +44,9 @@ func (controller UploadController) UploadRouter() {
 // @Success 200 {object} map[string]interface{}
 // @Router /upload [post]
 func (controller UploadController) uploadTemp(c *fiber.Ctx) error {
+	// Current working directory
+	root, _ := os.Getwd()
+
 	controller.Logger.LogAccess("%s %s %s\n", c.IP(), c.Method(), c.OriginalURL())
 
 	file, err := c.FormFile("document")
@@ -54,7 +58,7 @@ func (controller UploadController) uploadTemp(c *fiber.Ctx) error {
 	ext := split[len(split)-1]
 	genString := uuid.NewString()
 	// Save file to root directory:
-	c.SaveFile(file, fmt.Sprintf("/app/public/%s", genString+"."+ext))
+	c.SaveFile(file, fmt.Sprintf(root+"/public/%s", genString+"."+ext))
 
 	return c.JSON(&response.SuccessResponse{
 		Success: true,
