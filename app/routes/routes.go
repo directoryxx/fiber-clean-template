@@ -22,6 +22,7 @@ func RegisterRoute(app *fiber.App, ctx context.Context, log interfaces.Logger, e
 	RoleController := controller.NewRoleController(log, app, enforcer)
 	PermissionController := controller.NewPermissionController(log, enforcer, app)
 	QueueController := controller.NewQueueController(log)
+	UploadController := controller.NewUploadController(log, app, enforcer)
 
 	app.Get("/docs/*", swagger.New(
 		swagger.Config{
@@ -53,10 +54,12 @@ func RegisterRoute(app *fiber.App, ctx context.Context, log interfaces.Logger, e
 
 	enforcer.AddPolicy("admin", "role", "manage")
 	enforcer.AddPolicy("admin", "permission", "manage")
+	enforcer.AddPolicy("admin", "upload", "manage")
 
 	HomeController.HomeRouter()
 	RoleController.RoleRouter()
 	PermissionController.PermissionRouter()
+	UploadController.UploadRouter()
 
 	app.Get("/test", QueueController.TestQueue)
 }
