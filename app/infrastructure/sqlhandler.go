@@ -24,7 +24,7 @@ func NewSQLHandler(ctx context.Context) (*casbin.Enforcer, error) {
 		panic(err)
 	}
 
-	db.AutoMigrate(&domain.User{}, &domain.Role{})
+	db.AutoMigrate(&domain.User{}, &domain.Role{}, &domain.PhoneBook{})
 
 	enforcer := CasbinLoad(driver, dsn)
 

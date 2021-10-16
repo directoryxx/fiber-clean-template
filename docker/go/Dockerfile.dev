@@ -28,7 +28,7 @@ RUN go get -v github.com/fatih/gomodifytags
 RUN go get -v github.com/josharian/impl
 RUN go get -v github.com/haya14busa/goplay/cmd/goplay
 RUN go get -v github.com/go-delve/delve/cmd/dlv
-RUN go get -v -d github.com/go-delve/delve/cmd/dlv@master
+RUN go get -v github.com/go-delve/delve/cmd/dlv@master
 RUN go get -v honnef.co/go/tools/cmd/staticcheck
 RUN go get -v golang.org/x/tools/gopls
 
@@ -41,6 +41,7 @@ RUN useradd -ms /bin/bash golang
 COPY ./go.mod /app/go.mod
 COPY ./go.sum /app/go.sum
 COPY ./cmd /app/cmd
+COPY ./.air.linux.conf /app/.air.linux.conf
 #RUN go install github.com/directoryxx/fiber-clean-template/cmd
 
 # RUN go get github.com/oxequa/realize
