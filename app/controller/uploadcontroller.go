@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/casbin/casbin/v2"
+	"github.com/directoryxx/fiber-clean-template/app/infrastructure"
 	"github.com/directoryxx/fiber-clean-template/app/interfaces"
 	"github.com/directoryxx/fiber-clean-template/app/middleware"
 	"github.com/directoryxx/fiber-clean-template/app/utils/response"
@@ -44,6 +45,7 @@ func (controller UploadController) UploadRouter() {
 // @Success 200 {object} map[string]interface{}
 // @Router /upload [post]
 func (controller UploadController) uploadTemp(c *fiber.Ctx) error {
+	// Potential Upload Backdoor (Must Check)
 	// Current working directory
 	root, _ := os.Getwd()
 
@@ -60,10 +62,12 @@ func (controller UploadController) uploadTemp(c *fiber.Ctx) error {
 	// Save file to root directory:
 	c.SaveFile(file, fmt.Sprintf(root+"/public/%s", genString+"."+ext))
 
+	infrastructure.SendQueue(genString+"."+ext, "queueImport")
+
 	return c.JSON(&response.SuccessResponse{
 		Success: true,
-		Data:    "dataRole",
-		Message: "Role berhasil ditampilkan",
+		Data:    "ok",
+		Message: "Berhasil memasukkan ke queue",
 	})
 
 }

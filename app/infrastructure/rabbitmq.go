@@ -28,7 +28,7 @@ func SendQueue(data interface{}, queuename string) {
 		panic(errCh)
 	}
 	_, err := ch.QueueDeclare(
-		"TestQueue",
+		queuename,
 		true,
 		false,
 		false,
@@ -43,7 +43,7 @@ func SendQueue(data interface{}, queuename string) {
 	// Attempt to publish a message to the queue.
 	err = ch.Publish(
 		"",
-		"TestQueue",
+		queuename,
 		false,
 		false,
 		amqp.Publishing{
