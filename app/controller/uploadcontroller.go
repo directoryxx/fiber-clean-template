@@ -2,12 +2,14 @@ package controller
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/casbin/casbin/v2"
 	"github.com/directoryxx/fiber-clean-template/app/interfaces"
 	"github.com/directoryxx/fiber-clean-template/app/middleware"
 	"github.com/directoryxx/fiber-clean-template/app/utils/response"
 	"github.com/gofiber/fiber/v2"
+	"github.com/google/uuid"
 )
 
 var pageUploadPermission string = "upload"
@@ -47,8 +49,12 @@ func (controller UploadController) uploadTemp(c *fiber.Ctx) error {
 	if err != nil {
 		return err
 	}
+
+	split := strings.Split(file.Filename, ".")
+	ext := split[len(split)-1]
+	genString := uuid.NewString()
 	// Save file to root directory:
-	c.SaveFile(file, fmt.Sprintf("/app/public/%s", file.Filename))
+	c.SaveFile(file, fmt.Sprintf("/app/public/%s", genString+"."+ext))
 
 	return c.JSON(&response.SuccessResponse{
 		Success: true,
