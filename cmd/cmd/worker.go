@@ -19,6 +19,7 @@ import (
 	"log"
 
 	"github.com/directoryxx/fiber-clean-template/app/infrastructure"
+	"github.com/joho/godotenv"
 	"github.com/spf13/cobra"
 )
 
@@ -33,6 +34,10 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
+		err := godotenv.Load()
+		if err != nil {
+			panic(err)
+		}
 		conn, err := infrastructure.RabbitConn()
 		channel, _ := conn.Channel()
 		if err != nil {

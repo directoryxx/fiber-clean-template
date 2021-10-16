@@ -22,6 +22,8 @@ func Dispatch(ctx context.Context, log interfaces.Logger, enforcer *casbin.Enfor
 		IdleTimeout: idleTimeout,
 	})
 
+	app.Static("/storage/", "/app/public/")
+
 	// app.Use(pprof.New())
 	routes.RegisterRoute(app, ctx, log, enforcer)
 
@@ -34,7 +36,7 @@ func Dispatch(ctx context.Context, log interfaces.Logger, enforcer *casbin.Enfor
 	c := make(chan os.Signal, 1)                    // Create channel to signify a signal being sent
 	signal.Notify(c, os.Interrupt, syscall.SIGTERM) // When an interrupt or termination signal is sent, notify the channel
 
-	_ = <-c // This blocks the main thread until an interrupt is received
+	<-c // This blocks the main thread until an interrupt is received
 	fmt.Println("Gracefully shutting down...")
 	_ = app.Shutdown()
 
