@@ -38,7 +38,7 @@ func (controller UploadController) UploadRouter() {
 // Upload Temp
 // @Summary Upload Temp
 // @Description Upload Temp
-// @Tags Role
+// @Tags Import
 // @Param Authorization header string true "With the bearer started"
 // @Accept application/json
 // @Produce json

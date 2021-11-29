@@ -56,6 +56,12 @@ paths:
       consumes:
       - application/json
       description: Current User
+      parameters:
+      - description: With the bearer started
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -117,6 +123,11 @@ paths:
       - application/json
       description: Update Permission by role
       parameters:
+      - description: With the bearer started
+        in: header
+        name: Authorization
+        required: true
+        type: string
       - description: Permission
         in: body
         name: permission
@@ -162,6 +173,12 @@ paths:
       consumes:
       - application/json
       description: List Role
+      parameters:
+      - description: With the bearer started
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -178,6 +195,11 @@ paths:
       - application/json
       description: Create Role
       parameters:
+      - description: With the bearer started
+        in: header
+        name: Authorization
+        required: true
+        type: string
       - description: role
         in: body
         name: role
@@ -248,4 +270,26 @@ paths:
       summary: Update Role
       tags:
       - Role
+  /upload:
+    post:
+      consumes:
+      - application/json
+      description: Upload Temp
+      parameters:
+      - description: With the bearer started
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Upload Temp
+      tags:
+      - Import
 swagger: "2.0"
