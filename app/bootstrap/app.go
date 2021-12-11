@@ -12,6 +12,9 @@ import (
 	"github.com/directoryxx/fiber-clean-template/app/interfaces"
 	"github.com/directoryxx/fiber-clean-template/app/routes"
 	"github.com/gofiber/fiber/v2"
+
+	sentryfiber "github.com/directoryxx/fiber-clean-template/pkg/sentry"
+	"github.com/getsentry/sentry-go"
 )
 
 const idleTimeout = 5 * time.Second
@@ -21,6 +24,31 @@ func Dispatch(ctx context.Context, log interfaces.Logger, enforcer *casbin.Enfor
 	app := fiber.New(fiber.Config{
 		IdleTimeout: idleTimeout,
 	})
+
+	fmt.Println(os.Getenv("SENTRY_DSN"))
+
+	errSentry := sentry.Init(sentry.ClientOptions{
+		Dsn:              os.Getenv("SENTRY_DSN"),
+		TracesSampleRate: 1,
+		Debug:            false,
+		AttachStacktrace: true,
+		// BeforeSend: func(event *sentry.Event, hint *sentry.EventHint) *sentry.Event {
+		// 	if hint.Context != nil {
+		// 		if ctx, ok := hint.Context.Value(sentry.RequestContextKey).(*fiber.Ctx); ok {
+		// 			// You have access to the original Context if it panicked
+		// 		}
+		// 	}
+		// 	return event
+		// },
+	})
+
+	sentryHandler := sentryfiber.New(sentryfiber.Options{})
+
+	if errSentry != nil {
+		panic(errSentry)
+	}
+
+	app.Use(sentryHandler)
 
 	app.Static("/storage/", "/app/public/")
 
