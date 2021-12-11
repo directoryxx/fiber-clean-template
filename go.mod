@@ -8,7 +8,7 @@ require (
 	github.com/casbin/ent-adapter v0.2.1
 	github.com/go-playground/validator/v10 v10.9.0
 	github.com/go-redis/redis/v8 v8.11.3
-	github.com/gofiber/fiber/v2 v2.20.1
+	github.com/gofiber/fiber/v2 v2.23.0
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/joho/godotenv v1.4.0
 	github.com/spf13/cobra v1.2.1
@@ -22,13 +22,21 @@ require (
 )
 
 require (
-	github.com/andybalholm/brotli v1.0.3 // indirect
+	github.com/opentracing/opentracing-go v1.2.0 // indirect
+	github.com/shareed2k/fiber_tracing v0.0.6 // indirect
+	github.com/uber/jaeger-client-go v2.30.0+incompatible // indirect
+	github.com/uber/jaeger-lib v2.4.1+incompatible // indirect
+	go.uber.org/atomic v1.9.0 // indirect
+)
+
+require (
+	github.com/andybalholm/brotli v1.0.4 // indirect
 	github.com/google/uuid v1.3.0
 	github.com/klauspost/compress v1.13.6 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
-	github.com/valyala/fasthttp v1.30.0 // indirect
+	github.com/valyala/fasthttp v1.31.0 // indirect
 	github.com/valyala/tcplisten v1.0.0 // indirect
-	golang.org/x/sys v0.0.0-20211015200801-69063c4bb744 // indirect
+	golang.org/x/sys v0.0.0-20211210111614-af8b64212486 // indirect
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
 )
 
