@@ -12,6 +12,11 @@ import (
 	"github.com/directoryxx/fiber-clean-template/app/interfaces"
 	"github.com/directoryxx/fiber-clean-template/app/routes"
 	"github.com/gofiber/fiber/v2"
+
+	sentryfiber "github.com/directoryxx/fiber-clean-template/pkg/sentry"
+	"github.com/getsentry/sentry-go"
+	"github.com/shareed2k/fiber_tracing"
+	"github.com/uber/jaeger-client-go/config"
 )
 
 const idleTimeout = 5 * time.Second
@@ -21,6 +26,63 @@ func Dispatch(ctx context.Context, log interfaces.Logger, enforcer *casbin.Enfor
 	app := fiber.New(fiber.Config{
 		IdleTimeout: idleTimeout,
 	})
+
+	// Start Sentry
+	errSentry := sentry.Init(sentry.ClientOptions{
+		Dsn: os.Getenv("SENTRY_DSN"),
+		// TracesSampleRate: 1,
+		Debug:            false,
+		AttachStacktrace: true,
+		// Or provide a custom sampler:
+		TracesSampler: sentry.TracesSamplerFunc(func(ctx sentry.SamplingContext) sentry.Sampled {
+			return sentry.SampledTrue
+		}),
+		// BeforeSend: func(event *sentry.Event, hint *sentry.EventHint) *sentry.Event {
+		// 	if hint.Context != nil {
+		// 		if ctx, ok := hint.Context.Value(sentry.RequestContextKey).(*fiber.Ctx); ok {
+		// 			// You have access to the original Context if it panicked
+		// 		}
+		// 	}
+		// 	return event
+		// },
+	})
+
+	sentryHandler := sentryfiber.New(sentryfiber.Options{})
+
+	if errSentry != nil {
+		panic(errSentry)
+	}
+
+	app.Use(sentryHandler)
+	// End Sentry
+
+	// Start Jaeger
+	defcfg := config.Configuration{
+		ServiceName: "fiber-tracer",
+		Sampler: &config.SamplerConfig{
+			Type:  "const",
+			Param: 1,
+		},
+		Reporter: &config.ReporterConfig{
+			LogSpans:            true,
+			BufferFlushInterval: 1 * time.Second,
+		},
+	}
+	cfg, err := defcfg.FromEnv()
+	if err != nil {
+		panic("Could not parse Jaeger env vars: " + err.Error())
+	}
+	tracer, closer, err := cfg.NewTracer()
+	if err != nil {
+		panic("Could not initialize jaeger tracer: " + err.Error())
+	}
+	defer closer.Close()
+
+	app.Use(fiber_tracing.New(fiber_tracing.Config{
+		Tracer: tracer,
+	}))
+
+	// End Jaeger
 
 	app.Static("/storage/", "/app/public/")
 
