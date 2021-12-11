@@ -1,3 +1,4 @@
 .env
 tmp/
 docs/*
+.cover/*

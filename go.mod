@@ -22,11 +22,16 @@ require (
 )
 
 require (
+	github.com/dghubble/sling v1.4.0 // indirect
+	github.com/google/go-querystring v1.1.0 // indirect
+	github.com/mattn/goveralls v0.0.11 // indirect
 	github.com/opentracing/opentracing-go v1.2.0 // indirect
 	github.com/shareed2k/fiber_tracing v0.0.6 // indirect
 	github.com/uber/jaeger-client-go v2.30.0+incompatible // indirect
 	github.com/uber/jaeger-lib v2.4.1+incompatible // indirect
 	go.uber.org/atomic v1.9.0 // indirect
+	golang.org/x/mod v0.5.1 // indirect
+	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
 )
 
 require (
