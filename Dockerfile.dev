@@ -44,11 +44,6 @@ RUN go get -u github.com/spf13/cobra/cobra
 COPY ./.air.linux.conf /app/.air.linux.conf
 RUN go get -u github.com/cosmtrek/air
 
-# RUN go install github.com/directoryxx/fiber-clean-template/cmd
-
-# RUN go mod download
-# RUN cd /app/cmd && go install github.com/directoryxx/fiber-clean-template/cmd
-
-# USER golang
+RUN go get -u github.com/swaggo/swag/cmd/swag
 
 CMD ["air"]

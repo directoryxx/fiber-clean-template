@@ -153,9 +153,10 @@ func (controller RoleController) createRole(c *fiber.Ctx) error {
 // @Tags Role
 // @Accept application/json
 // @Param role body rules.RoleValidation true "role"
+// @Param id path string true "Role ID"
 // @Produce json
 // @Success 200 {object} map[string]interface{}
-// @Router /role/:id [put]
+// @Router /role/{id} [put]
 func (controller RoleController) updateRole(c *fiber.Ctx) error {
 	controller.Logger.LogAccess("%s %s %s\n", c.IP(), c.Method(), c.OriginalURL())
 
@@ -228,10 +229,11 @@ func (controller RoleController) updateRole(c *fiber.Ctx) error {
 // @Summary Get Role
 // @Description Get Role
 // @Tags Role
+// @Param id path string true "Role ID"
 // @Accept application/json
 // @Produce json
 // @Success 200 {object} map[string]interface{}
-// @Router /role/:id [get]
+// @Router /role/{id} [get]
 func (controller RoleController) getRole(c *fiber.Ctx) error {
 	controller.Logger.LogAccess("%s %s %s\n", c.IP(), c.Method(), c.OriginalURL())
 
@@ -267,6 +269,7 @@ func (controller RoleController) getRole(c *fiber.Ctx) error {
 // @Description Delete Role
 // @Tags Role
 // @Accept application/json
+// @Param id path string true "Role ID"
 // @Produce json
 // @Success 200 {object} map[string]interface{}
 // @Router /role/:id [delete]
