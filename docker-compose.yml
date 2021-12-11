@@ -4,7 +4,7 @@ services:
     container_name: "golang"
     build:
       context: .
-      dockerfile: ./docker/go/Dockerfile.dev
+      dockerfile: ./Dockerfile.dev
     restart: always
     volumes:
       - ./:/app
@@ -39,6 +39,26 @@ services:
     tty: true
     ports:
       - 6380:6379
+    networks:
+      - dev
+
+  jaeger-agent:
+    container_name: 'tracing.jaeger.agent'
+    image: jaegertracing/all-in-one:latest
+    networks:
+        - jaeger-demo
+    ports:
+        - "5775:5775/udp"
+        - "6831:6831/udp"
+        - "6832:6832/udp"
+        - "5778:5778/tcp"
+        - "16686:16686"
+        - "14268:14268"
+        - "9411:9411"
+    environment:
+        - LOG_LEVEL=debug
+    labels:
+        NAME: "jaeger-agent"
     networks:
       - dev
 

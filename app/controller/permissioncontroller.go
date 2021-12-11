@@ -49,10 +49,11 @@ func (controller PermissionController) PermissionRouter() {
 // @Description List Permission by role
 // @Tags Permission
 // @Param Authorization header string true "With the bearer started"
+// @Param id path string true "Permission ID"
 // @Accept application/json
 // @Produce json
 // @Success 200 {object} map[string]interface{}
-// @Router /permission/:id [get]
+// @Router /permission/{id} [get]
 func (controller PermissionController) getListPermission(c *fiber.Ctx) error {
 	controller.Logger.LogAccess("%s %s %s\n", c.IP(), c.Method(), c.OriginalURL())
 
@@ -92,10 +93,11 @@ func (controller PermissionController) getListPermission(c *fiber.Ctx) error {
 // @Tags Permission
 // @Accept application/json
 // @Param Authorization header string true "With the bearer started"
+// @Param id path string true "Permission ID"
 // @Param permission body rules.PermissionUpdate true "Permission"
 // @Produce json
 // @Success 200 {object} map[string]interface{}
-// @Router /permission/:id [post]
+// @Router /permission/{id} [post]
 func (controller PermissionController) updatePermission(c *fiber.Ctx) error {
 	controller.Logger.LogAccess("%s %s %s\n", c.IP(), c.Method(), c.OriginalURL())
 

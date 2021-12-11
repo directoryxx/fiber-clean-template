@@ -10,11 +10,15 @@ RUN apt update && apt install git \
 
 RUN mkdir /app
 
-COPY ../../ /tmp
+RUN useradd -m -s /bin/bash -U go
 
-RUN ls -al /tmp
+RUN chown go:go /app
 
-COPY ./air-install.sh /tmp/install.sh
+WORKDIR /app
+
+USER go
+
+COPY --chown=go:go ./air-install.sh /tmp/install.sh 
 
 RUN chmod +x /tmp/install.sh
 
@@ -33,23 +37,13 @@ RUN go get -v honnef.co/go/tools/cmd/staticcheck
 RUN go get -v golang.org/x/tools/gopls
 
 # Install packages
-RUN go get entgo.io/ent/cmd/ent
+# RUN go get entgo.io/ent/cmd/ent
 RUN go get -u github.com/spf13/cobra/cobra
 
-RUN useradd -ms /bin/bash golang
-
-COPY ./go.mod /app/go.mod
-COPY ./go.sum /app/go.sum
-COPY ./cmd /app/cmd
+# COPY ./cmd cmd
 COPY ./.air.linux.conf /app/.air.linux.conf
-#RUN go install github.com/directoryxx/fiber-clean-template/cmd
+RUN go get -u github.com/cosmtrek/air
 
-# RUN go get github.com/oxequa/realize
-WORKDIR /app
-
-RUN go mod download
-RUN cd /app/cmd && go install github.com/directoryxx/fiber-clean-template/cmd
-
-USER golang
+RUN go get -u github.com/swaggo/swag/cmd/swag
 
 CMD ["air"]
