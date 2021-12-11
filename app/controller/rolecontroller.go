@@ -272,7 +272,7 @@ func (controller RoleController) getRole(c *fiber.Ctx) error {
 // @Param id path string true "Role ID"
 // @Produce json
 // @Success 200 {object} map[string]interface{}
-// @Router /role/:id [delete]
+// @Router /role/{id} [delete]
 func (controller RoleController) deleteRole(c *fiber.Ctx) error {
 	controller.Logger.LogAccess("%s %s %s\n", c.IP(), c.Method(), c.OriginalURL())
 
