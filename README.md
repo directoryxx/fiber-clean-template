@@ -7,6 +7,8 @@
 2. ACL with Casbin
 3. Swagger API Docs
 4. Example Import file (Queue) - TBD
+5. Add Sentry
+6. Add Jaeger
 
 
 # ORM
