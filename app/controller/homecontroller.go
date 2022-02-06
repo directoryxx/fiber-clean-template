@@ -3,11 +3,11 @@ package controller
 import (
 	"context"
 
-	"github.com/directoryxx/fiber-clean-template/app/interfaces"
 	"github.com/directoryxx/fiber-clean-template/app/repository"
 	"github.com/directoryxx/fiber-clean-template/app/service"
-	"github.com/directoryxx/fiber-clean-template/app/utils/response"
-	"github.com/directoryxx/fiber-clean-template/app/utils/session"
+	"github.com/directoryxx/fiber-clean-template/common/interfaces"
+	"github.com/directoryxx/fiber-clean-template/common/utils/response"
+	"github.com/directoryxx/fiber-clean-template/common/utils/session"
 	"github.com/gofiber/fiber/v2"
 )
 

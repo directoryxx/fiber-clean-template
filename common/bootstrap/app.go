@@ -9,8 +9,8 @@ import (
 	"time"
 
 	"github.com/casbin/casbin/v2"
-	"github.com/directoryxx/fiber-clean-template/app/interfaces"
-	"github.com/directoryxx/fiber-clean-template/app/routes"
+	"github.com/directoryxx/fiber-clean-template/common/interfaces"
+	"github.com/directoryxx/fiber-clean-template/routes"
 	"github.com/gofiber/fiber/v2"
 
 	sentryfiber "github.com/directoryxx/fiber-clean-template/pkg/sentry"

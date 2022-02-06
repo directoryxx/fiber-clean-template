@@ -18,7 +18,7 @@ package cmd
 import (
 	"log"
 
-	"github.com/directoryxx/fiber-clean-template/app/infrastructure"
+	"github.com/directoryxx/fiber-clean-template/common/infrastructure"
 	"github.com/joho/godotenv"
 	"github.com/spf13/cobra"
 )

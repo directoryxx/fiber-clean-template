@@ -1,7 +1,7 @@
 package infrastructure
 
 import (
-	"github.com/directoryxx/fiber-clean-template/app/interfaces"
+	"github.com/directoryxx/fiber-clean-template/common/interfaces"
 	"github.com/joho/godotenv"
 )
 

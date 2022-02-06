@@ -8,10 +8,10 @@ import (
 	swagger "github.com/arsmn/fiber-swagger/v2"
 	"github.com/casbin/casbin/v2"
 	"github.com/directoryxx/fiber-clean-template/app/controller"
-	"github.com/directoryxx/fiber-clean-template/app/interfaces"
-	"github.com/directoryxx/fiber-clean-template/app/middleware"
 	"github.com/directoryxx/fiber-clean-template/app/repository"
 	"github.com/directoryxx/fiber-clean-template/app/service"
+	"github.com/directoryxx/fiber-clean-template/common/interfaces"
+	"github.com/directoryxx/fiber-clean-template/common/middleware"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/monitor"
 )

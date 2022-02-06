@@ -1,8 +1,8 @@
 package controller
 
 import (
-	"github.com/directoryxx/fiber-clean-template/app/infrastructure"
-	"github.com/directoryxx/fiber-clean-template/app/interfaces"
+	"github.com/directoryxx/fiber-clean-template/common/infrastructure"
+	"github.com/directoryxx/fiber-clean-template/common/interfaces"
 	"github.com/gofiber/fiber/v2"
 )
 

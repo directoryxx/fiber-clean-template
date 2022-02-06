@@ -2,8 +2,8 @@ package middleware
 
 import (
 	"github.com/casbin/casbin/v2"
-	"github.com/directoryxx/fiber-clean-template/app/utils/response"
-	"github.com/directoryxx/fiber-clean-template/app/utils/session"
+	"github.com/directoryxx/fiber-clean-template/common/utils/response"
+	"github.com/directoryxx/fiber-clean-template/common/utils/session"
 	"github.com/gofiber/fiber/v2"
 )
 

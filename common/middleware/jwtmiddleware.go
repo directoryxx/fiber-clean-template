@@ -2,8 +2,8 @@ package middleware
 
 import (
 	"github.com/directoryxx/fiber-clean-template/app/service"
-	"github.com/directoryxx/fiber-clean-template/app/utils/jwt"
-	"github.com/directoryxx/fiber-clean-template/app/utils/session"
+	"github.com/directoryxx/fiber-clean-template/common/utils/jwt"
+	"github.com/directoryxx/fiber-clean-template/common/utils/session"
 	"github.com/gofiber/fiber/v2"
 )
 

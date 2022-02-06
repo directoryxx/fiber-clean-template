@@ -6,10 +6,10 @@ import (
 	"strings"
 
 	"github.com/casbin/casbin/v2"
-	"github.com/directoryxx/fiber-clean-template/app/infrastructure"
-	"github.com/directoryxx/fiber-clean-template/app/interfaces"
-	"github.com/directoryxx/fiber-clean-template/app/middleware"
-	"github.com/directoryxx/fiber-clean-template/app/utils/response"
+	"github.com/directoryxx/fiber-clean-template/common/infrastructure"
+	"github.com/directoryxx/fiber-clean-template/common/interfaces"
+	"github.com/directoryxx/fiber-clean-template/common/middleware"
+	"github.com/directoryxx/fiber-clean-template/common/utils/response"
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
 )

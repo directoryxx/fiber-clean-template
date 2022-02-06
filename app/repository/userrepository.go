@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/directoryxx/fiber-clean-template/app/domain"
-	"github.com/directoryxx/fiber-clean-template/app/infrastructure"
+	"github.com/directoryxx/fiber-clean-template/common/infrastructure"
 )
 
 type UserRepository struct {

@@ -5,7 +5,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/directoryxx/fiber-clean-template/app/interfaces"
+	"github.com/directoryxx/fiber-clean-template/common/interfaces"
 )
 
 // A Logger belong to the infrastructure layer.

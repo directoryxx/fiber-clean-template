@@ -3,8 +3,8 @@ package main
 import (
 	"context"
 
-	"github.com/directoryxx/fiber-clean-template/app/bootstrap"
-	"github.com/directoryxx/fiber-clean-template/app/infrastructure"
+	"github.com/directoryxx/fiber-clean-template/common/bootstrap"
+	"github.com/directoryxx/fiber-clean-template/common/infrastructure"
 )
 
 func main() {
